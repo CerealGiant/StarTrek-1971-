@@ -1,7 +1,6 @@
-#include "Enterprise.h"
+#include "Star.h"
 
-
- Enterprise:: Enterprise() {
+Star:: Star() {
     srand(time(0));
     //Filling the values with the initial 1.
     SpaceObjects();
@@ -14,7 +13,4 @@
     int c = rand() % ( 8 + 1 - 1) + 1, r = rand() % ( 8 + 1 - 1) + 1;
     m_secx = c, m_secy = r;
 
-    m_photoncount = DEFAULTCOUNT;
-    m_photonpower = 0;
-    //m_photonpower > shield strength of the enemy.
 }

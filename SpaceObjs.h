@@ -20,6 +20,24 @@ class SpaceObjects {
     SpaceObjects(int secx,int secy, int quadx, int quady, int armor,int pulseattack) {
         m_secx = secx, m_secy = secy, m_quadx = quadx, m_quady = quady,m_armor = armor, m_pulseattack = pulseattack;
     }
+
+
+    //Getters
+    int returnQuadx() {
+        return m_quadx;
+    }
+
+    int returnQuady() {
+        return m_quady;
+    }
+
+    int returnSecx() {
+        return m_secx;
+    }
+
+    int returnSecy() {
+        return m_secy;
+    }
     
 
 };
