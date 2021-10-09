@@ -1,6 +1,24 @@
 #include "IO.h"
+//Global
 
+//Creating & Initialising the player(<*>)
+Enterprise player;
+list<kilgon> kilgons;
+list<Star> stars;
+string ss[10][24] = {
+    {" - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "},
+    {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "},
+    {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "},
+    {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "},
+    {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "},
+    {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "},
+    {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "},
+    {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "},
+    {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "},
+    {" - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "},
+};
 
+//Starting Screen(ASCII Art & Options)
 void start() {
   char* inpt = new char[sizeof(char)*100],*ptr,*st = new char[500];
 
@@ -72,14 +90,11 @@ void instructions() {
   fgets(cont,sizeof(cont),stdin);
 }
 
-//Creating & Initalising the Enterprise,Kilgons,Stars and Starbases
+//Initalising the Enterprise,Kilgons,Stars and Starbases
 void init() {
 
-  //Creating & Initialising the player(<*>)
-  Enterprise player;
-
   //Creating & Initating the list of kilgons
-  list<kilgon> kilgons;
+  
   srand(time(0));
   int k = rand() % (20 + 1 - 5) + 5;
   srand(time(0));
@@ -99,7 +114,7 @@ void init() {
   }
 
   //Creating & Initating the list of stars(*)
-  list<Star> stars;
+  
   srand(time(0));
   int st = rand() %  (15 + 1 - 8) + 8;
   cout << "ST: " << st << endl;
@@ -118,5 +133,29 @@ void init() {
 
 //Short Range Scan view.
 void shortRangeScan() {
-  cout << "-=-=-=-=-=-=-=-=-" <<endl;
+
+  int player_x = player.returnSecx();//Column
+  int player_y = player.returnSecy();//Row
+  int editedx = 1 + ( (player_x -1) * 3 );
+  int editedy = player_y;
+  ss[editedy][editedx] = "<*>";
+  cout << "X: " << player_x << endl;
+  cout << "Y: " << player_y << endl;
+  cout << "EX: " << editedx << endl;
+  cout << "EY: " << editedy << endl;
+  for(int i =0; i < 10;i++) {
+    for(int j =0; j < 24;j++) {
+      cout << ss[i][j];
+    }
+    cout << "\n";
+  }
+  cout << "\n\n---------STATS----------"<<endl;
+  cout << "STARDATE" <<endl;
+  cout << "CONDITION" <<endl;
+  cout << "QUADRANT" <<endl;
+  cout << "SECTOR" <<endl;
+  cout << "ENERGY" <<endl;
+  cout << "SHIELDS" <<endl;
+  cout << "PHOTON TORPEDOS" <<endl;
+  cout << "---------STATS END---------"<<endl;
 }

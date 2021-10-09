@@ -15,5 +15,6 @@ using namespace std;
 void start();
 void instructions(); 
 void init();
+void shortRangeScan();
 extern list<kilgon> kilgons;
 #endif
