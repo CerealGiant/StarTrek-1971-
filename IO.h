@@ -1,5 +1,5 @@
-#ifndef TEXTINPUT_H
-#define TEXTINPUT_H
+#ifndef IO_H
+#define IO_H
 #include <stdio.h>
 #include <iostream>
 #include <stdlib.h>
@@ -8,5 +8,5 @@
 using namespace std;
 
 void start();
-
+void instructions(); 
 #endif

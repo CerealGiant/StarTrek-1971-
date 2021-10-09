@@ -1,2 +1,1 @@
-obj/main.o: /home/neeraj/StarTrek/main.cpp \
- /home/neeraj/StarTrek/TextInput.h
+obj/main.o: /home/neeraj/StarTrek/main.cpp /home/neeraj/StarTrek/IO.h
