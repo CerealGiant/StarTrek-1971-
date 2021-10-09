@@ -16,5 +16,8 @@ void start();
 void instructions(); 
 void init();
 void shortRangeScan();
+void movement();
+void commands();
 extern list<kilgon> kilgons;
+extern string ss[10][24];
 #endif

@@ -1,11 +1,19 @@
 #include "IO.h"
 //Global
+#define EAST 1
+#define NORTH_EAST 2
+#define NORTH 3
+#define NORTH_WEST 4
+#define WEST 5
+#define SOUTH_WEST 6
+#define SOUTH 7
+#define SOUTH_EAST 8
 
 //Creating & Initialising the player(<*>)
 Enterprise player;
 list<kilgon> kilgons;
 list<Star> stars;
-string ss[10][24] = {
+extern string ss[10][24] = {
     {" - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "},
     {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "},
     {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "},
@@ -51,6 +59,7 @@ void start() {
     break;
   }else if(number == 2 && count == 0) {
     init();
+    shortRangeScan();
     break;
   }else {
     count = 0;
@@ -93,6 +102,7 @@ void instructions() {
 //Initalising the Enterprise,Kilgons,Stars and Starbases
 void init() {
 
+
   //Creating & Initating the list of kilgons
   
   srand(time(0));
@@ -117,7 +127,6 @@ void init() {
   
   srand(time(0));
   int st = rand() %  (15 + 1 - 8) + 8;
-  cout << "ST: " << st << endl;
   srand(time(0));
   for(int i = 0; i < st;i++) {
     Star *a = new Star;
@@ -131,31 +140,169 @@ void init() {
 
 }
 
+
 //Short Range Scan view.
 void shortRangeScan() {
+  player.LoadPos();
 
-  int player_x = player.returnSecx();//Column
-  int player_y = player.returnSecy();//Row
-  int editedx = 1 + ( (player_x -1) * 3 );
-  int editedy = player_y;
-  ss[editedy][editedx] = "<*>";
-  cout << "X: " << player_x << endl;
-  cout << "Y: " << player_y << endl;
-  cout << "EX: " << editedx << endl;
-  cout << "EY: " << editedy << endl;
+  //Updating the board with the latest current pos values obtained from .LoadPos()
   for(int i =0; i < 10;i++) {
     for(int j =0; j < 24;j++) {
       cout << ss[i][j];
     }
     cout << "\n";
   }
+
   cout << "\n\n---------STATS----------"<<endl;
   cout << "STARDATE" <<endl;
-  cout << "CONDITION" <<endl;
-  cout << "QUADRANT" <<endl;
-  cout << "SECTOR" <<endl;
-  cout << "ENERGY" <<endl;
-  cout << "SHIELDS" <<endl;
-  cout << "PHOTON TORPEDOS" <<endl;
+  cout << "CONDITION\t" << player.getCondition() <<endl;
+  cout << "QUADRANT \t(" << player.returnQuadx() <<","<< player.returnQuady() <<")"<<endl;
+  cout << "SECTOR   \t(" << player.returnSecx() <<","<< player.returnSecy() <<")"<<endl;
+  cout << "ENERGY   \t"<<player.getEnergy() <<endl;
+  cout << "SHIELDS  \t"<<player.getArmor() <<endl;
+  cout << "PHOTONS  \t" <<player.getPhotonCount() << endl;
   cout << "---------STATS END---------"<<endl;
+commands();
+  
+}
+
+//To handle and display the commands user can input & inputs
+void commands() {
+  int input;
+  cout << "COMMAND ";
+  //The commands range from 0-9.
+  scanf("%d",&input);
+  switch(input) {
+    case 0:
+    movement();
+    break;
+    case 1:
+    shortRangeScan();
+    break;
+  }
+}
+
+//To control the movement of the player
+void movement() {
+
+  int course;
+  float warp_factor;
+  
+  //Course input
+  cout << "Course[1-9]: ";
+  scanf("%d",&course);
+
+  //Warp Factor input
+  cout << "Warp Factor[0-8]: ";
+  scanf("%f",&warp_factor);
+
+
+    int move = warp_factor / 0.125;
+    switch(course) {
+      case EAST:
+      player.tempPos(player.returnSecx(),player.returnSecy() );
+      if( (player.returnSecx() + (1*move)) > 8 ) {
+        int value = (player.returnSecx() + (1*move)) - 8;
+        int count = 0;
+        if(value < 8) {
+          count+=1;
+        }
+        while(value >= 8) {
+          value = value - 8;
+          count++;
+        }
+        if( (player.returnQuadx() + (1*count)) > 64 ) {
+          cout << "TOO FAR OUT OF MAP!!!!"<<endl;
+          player.setQuadx(64);
+          player.setSecx(1);
+        }else {
+        player.setQuadx(player.returnQuadx() + (1*count) );
+        player.setSecx(value);
+        }
+
+      }else {
+      player.setSecx( player.returnSecx() + (1*move) );
+      }
+      break;
+
+      case NORTH_EAST:
+      player.tempPos(player.returnSecx(),player.returnSecy() );
+      if( (player.returnSecx() + (1*move)) > 8 ) {
+        int value = (player.returnSecx() + (1*move)) - 8;
+        int count = 0;
+        if(value < 8) {
+          count+=1;
+        }
+        while(value > 8) {
+          value = value - 8;
+          count++;
+        }
+        if( (player.returnQuadx() + (1*count)) > 64 ) {
+          cout << "TOO FAR OUT OF MAP!!!!"<<endl;
+          player.setQuadx(64);
+          player.setSecx(1);
+        }else {
+        player.setQuadx(player.returnQuadx() + (1*count) );
+        player.setSecx(value);
+        }
+
+      }else {
+      player.setSecx( player.returnSecx() + (1*move) );
+      }
+      if((player.returnSecy() - (1*move) ) < 1 ) {
+        int value = player.returnSecy() - (1*move) + 8;
+        int count = 0;
+        if(value > 0) {
+          count+=1;
+        }
+        while(value <= 0) {
+          value = value + 8;
+          count++;
+        }
+        player.setQuady(player.returnQuady() - (1*count) );
+        player.setSecy(value);
+      }else {
+      player.setSecy(player.returnSecy() - (1*move) );
+      }
+
+      break;
+
+      case NORTH:
+      player.tempPos(player.returnSecx(),player.returnSecy() );
+      player.setSecy(player.returnSecy() - (1*move) );
+      break;
+    
+
+      case NORTH_WEST:
+      player.tempPos(player.returnSecx(),player.returnSecy() );
+      player.setSecx(player.returnSecx() - (1*move) );
+      player.setSecy(player.returnSecy() - (1*move) );
+      break;
+
+      case WEST:
+      player.tempPos(player.returnSecx(),player.returnSecy() );
+      player.setSecx(player.returnSecx() - (1*move) );
+      break;
+
+      case SOUTH_WEST:
+      player.tempPos(player.returnSecx(),player.returnSecy() );
+      player.setSecx(player.returnSecx() - (1*move) );
+      player.setSecy(player.returnSecy() + (1*move) );
+      break;
+
+      case SOUTH:
+      player.tempPos(player.returnSecx(),player.returnSecy() );
+      player.setSecy(player.returnSecy() + (1*move) );
+      break;
+
+      case SOUTH_EAST:
+      player.tempPos(player.returnSecx(),player.returnSecy() );
+      player.setSecx(player.returnSecx() + (1*move) );
+      player.setSecy(player.returnSecy() + (1*move) );
+      break;
+
+    }
+
+commands();
+
 }
