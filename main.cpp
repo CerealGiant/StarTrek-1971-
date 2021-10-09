@@ -2,8 +2,14 @@
 #include "Enterprise.h"
 #include "Kilgon.h"
 int main(void) {
-    kilgon a;
-    cout <<"X POS: "<< a.returnQuadx()<<"Y POS: "<< a.returnQuady() << endl;
-    cout <<"X POS: "<< a.returnSecx()<<"Y POS: "<< a.returnSecy() << endl;
+    start();
+    // srand(time(0));
+    // kilgon a,b,c;
+    // cout << "KILGONS' X POS: " << a.returnQuadx() << endl;
+    // cout << "KILGONS' Y POS: " << a.returnQuady() << endl;
+    // cout << "KILGONS' X POS: " << b.returnQuadx() << endl;
+    // cout << "KILGONS' Y POS: " << b.returnQuady() << endl;
+    // cout << "KILGONS' X POS: " << c.returnQuadx() << endl;
+    // cout << "KILGONS' Y POS: " << c.returnQuady() << endl;
     return 0;
 }

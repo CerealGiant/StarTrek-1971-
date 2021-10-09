@@ -1,7 +1,7 @@
 #include "Starbase.h"
 
 starbase:: starbase() {
-    srand(time(0));
+
     //Filling the values with the initial 1.
     SpaceObjects();
     

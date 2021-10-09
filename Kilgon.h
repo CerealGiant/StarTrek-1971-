@@ -9,7 +9,13 @@ class kilgon: public SpaceObjects{
     public:
     //Constructor
     kilgon();
-    
+    //Getter
+    int getQuadx() {
+        return m_quadx;
+    }
+    int getQuady() {
+        return m_quady;
+    }
 
 };
 #endif
