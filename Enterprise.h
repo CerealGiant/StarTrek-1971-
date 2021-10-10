@@ -52,5 +52,8 @@ class Enterprise: public SpaceObjects{
     void setPhotonCount(int p) {
         m_photoncount = p;
     }
+    void setArmor(int a) {
+        m_armor = a;
+    }
 };
 #endif

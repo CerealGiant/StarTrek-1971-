@@ -169,7 +169,7 @@ commands();
 //To handle and display the commands user can input & inputs
 void commands() {
   int input;
-  cout << "COMMAND ";
+  cout << "COMMAND: ";
   //The commands range from 0-9.
   scanf("%d",&input);
   switch(input) {
@@ -178,6 +178,9 @@ void commands() {
     break;
     case 1:
     shortRangeScan();
+    break;
+    case 5:
+    shieldset();
     break;
   }
 }
@@ -209,7 +212,7 @@ void movement() {
           count++;
         }
         if( (player.returnQuadx() + (1*count)) > 8 ) {
-          cout << "TOO FAR OUT OF THE GALAXY!"<<endl;
+          cout << "X: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
           player.setQuadx(player.returnQuadx() );
           player.setSecx(player.returnSecx() );
         }else {
@@ -232,7 +235,7 @@ void movement() {
           count++;
         }
         if( (player.returnQuadx() + (1*count)) > 8 ) {
-          cout << "TOO FAR OUT OF THE GALAXY!"<<endl;
+          cout << "X: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
           player.setQuadx(player.returnQuadx() );
           player.setSecx(player.returnSecx() );
         }else {
@@ -250,8 +253,8 @@ void movement() {
           value = value + 8;
           count++;
         }
-        if(player.returnQuady() - (1*count) <= 0) {
-          cout << "TOO FAR OUT OF THE GALAXY!"<<endl;
+        if(player.returnQuady() - (1*count) < 1) {
+          cout << "Y: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
          player.setSecy(player.returnSecy() );
          player.setQuady(player.returnQuady() );
         }else {
@@ -275,8 +278,8 @@ void movement() {
           value = value + 8;
           count++;
         }
-        if(player.returnQuady() - (1*count) <= 0 ) {
-         cout << "TOO FAR OUT OF THE GALAXY!"<<endl;
+        if(player.returnQuady() - (1*count) < 1 ) {
+         cout << "Y: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
          player.setSecy(player.returnSecy() );
          player.setQuady(player.returnQuady() );          
         }else {
@@ -297,11 +300,11 @@ void movement() {
         int value = player.returnSecx() - (1*move);
         int count = 0;
         while(value <= 0) {
-          value = value - 8;
+          value = value + 8;
           count++;
         }
-        if(player.returnQuadx() - (1*count) <= 1 ) {
-          cout << "TOO FAR OUT OF THE GALAXY!"<<endl;
+        if((player.returnQuadx() - (1*count) ) < 1 ) {
+          cout << "X: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
           player.setSecx(player.returnSecx() );
           player.setQuadx(player.returnQuadx() );
         }else {
@@ -312,15 +315,15 @@ void movement() {
       player.setSecx(player.returnSecx() - (1*move) );
       }
 
-      if(player.returnSecy() - (1*move) < 1 ) {
+      if((player.returnSecy() - (1*move)) < 1 ) {
         int value = player.returnSecy() - (1*move);
         int count = 0;
         while(value <= 0 ) {
-          value = value - 8;
+          value = value + 8;
           count++;
         }
-        if(player.returnQuady() - (1*count) <= 0 ) {
-          cout << "TOO FAR OUT OF THE GALAXY!"<<endl;
+        if((player.returnQuady() - (1*count)) < 1 ) {
+          cout << "Y: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
           player.setSecy(player.returnSecy() );
           player.setQuady(player.returnQuady() );
         }else {
@@ -335,28 +338,159 @@ void movement() {
 
       case WEST:
       player.tempPos(player.returnSecx(),player.returnSecy() );
+      if((player.returnSecx() - (1*move)) < 1 ) {
+        int value = player.returnSecx() - (1*move);
+        int count = 0;
+        while(value <= 0) {
+          value = value + 8;
+          count++;
+        }
+        if( (player.returnQuadx() - (1*count)) < 1) {
+          cout << "X: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
+          player.setQuadx(player.returnQuadx() );
+          player.setSecx(player.returnSecx() );
+        }else {
+          player.setQuadx(player.returnQuadx() - (1*count));
+          player.setSecx(value);
+        }
+      }else {
       player.setSecx(player.returnSecx() - (1*move) );
+      }
+
       break;
 
       case SOUTH_WEST:
       player.tempPos(player.returnSecx(),player.returnSecy() );
+      if(player.returnSecx() - (1*move) < 1) {
+        int value = player.returnSecx() - (1*move);
+        int count = 0;
+        while(value <= 0) {
+          value = value + 8;
+          count++;
+        }
+        if(player.returnQuadx() - (1*count) < 1) {
+          cout << "X: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
+          player.setQuadx(player.returnQuadx() );
+          player.setSecx(player.returnSecx() ); 
+        }else {
+          player.setQuadx(player.returnQuadx() - (1*count) );
+          player.setSecx(value);
+        }
+      }else {
       player.setSecx(player.returnSecx() - (1*move) );
+      }
+      if(player.returnSecy() + (1*move) > 8) {
+        int value = player.returnSecy() + (1*move);
+        int count = 0;
+        while(value >= 8) {
+          value = value - 8;
+          count++;
+        }
+        if(player.returnQuady() + (1*count) > 8) {
+          cout <<"Y: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
+          player.setSecy(player.returnSecy() );
+          player.setQuady(player.returnQuady() );
+        }else {
+          player.setQuady(player.returnQuady() + (1*count) );
+          player.setSecy(value);
+        }
+      }else {
       player.setSecy(player.returnSecy() + (1*move) );
+      }
+
       break;
 
       case SOUTH:
       player.tempPos(player.returnSecx(),player.returnSecy() );
+      if(player.returnSecy() + (1*move) > 8) {
+        int value = player.returnSecy() + (1*move);
+        int count = 0;
+        while(value >= 8) {
+          value = value - 8;
+          count++;
+        }
+        if(player.returnQuady() + (1*count) > 8) {
+          cout <<"Y: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
+          player.setSecy(player.returnSecy() );
+          player.setQuady(player.returnQuady() );
+        }else {
+          player.setSecy(value);
+          player.setQuady(player.returnQuady() + (1*count) );
+        }
+      }else {
       player.setSecy(player.returnSecy() + (1*move) );
+      }
+
       break;
 
       case SOUTH_EAST:
       player.tempPos(player.returnSecx(),player.returnSecy() );
+      if(player.returnSecx() + (1*move) > 8) {
+        int value = player.returnSecx() + (1*move);
+        int count = 0;
+        while(value >= 8) {
+          value = value - 8;
+          count++;
+        }
+        if(player.returnQuadx() + (1*count) > 8) {
+          cout << "X: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
+          player.setSecx(player.returnSecx() );
+          player.setQuadx(player.returnQuadx() );
+        }else {
+          player.setSecx(value);
+          player.setQuadx(player.returnQuadx() + (1*count) );
+        }
+      }else {
       player.setSecx(player.returnSecx() + (1*move) );
+      }
+      if(player.returnSecy() + (1*move) > 8) {
+        int value = player.returnSecy() + (1*move);
+        int count = 0;
+        while(value >= 8) {
+          value = value - 8;
+          count++;
+        }
+        if(player.returnQuady() + (1*count) > 8 ) {
+          cout<<"Y: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
+          player.setSecy(player.returnSecy() );
+          player.setQuady(player.returnQuady() );
+        }else {
+          player.setQuady(player.returnQuady() + (1*count) );
+          player.setSecy(value);
+        }
+      }else {
       player.setSecy(player.returnSecy() + (1*move) );
+      }
+
       break;
 
     }
 
 commands();
 
+}
+
+void shieldset() {
+  int shield_temp = player.getArmor();
+  int shield;
+  while(true) {
+  cout << "SET ENERGY GOING TO SHIELD: ";
+  scanf("%d",&shield);
+  if(shield > player.getEnergy() ) {
+    cout<<"NOT POSSIBLE.(ENERGY TOO LOW)"<<endl;
+    continue;
+  }else if(player.getArmor() >= shield) {
+    cout<<"SET ENERGY HIGHER THAN PREVIOUS ONE."<<endl;
+    continue;
+  }else {
+    break;
+  }
+  }
+  player.setArmor(shield);
+  player.setEnergy(player.getEnergy() - (shield-shield_temp) );
+  commands();
+}
+
+void longScan() {
+  
 }
