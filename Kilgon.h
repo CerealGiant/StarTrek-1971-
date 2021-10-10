@@ -1,7 +1,7 @@
 #ifndef KILGON_H
 #define KILGON_H
 #include "SpaceObjs.h"
-
+#include "IO.h"
 //Enemy is the +++(Kilgon)
 class kilgon: public SpaceObjects{
     private:
@@ -16,6 +16,7 @@ class kilgon: public SpaceObjects{
     int getQuady() {
         return m_quady;
     }
+    void LoadPos();
 
 };
 #endif

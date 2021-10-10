@@ -11,5 +11,8 @@ int main(void) {
     // cout << "KILGONS' Y POS: " << b.returnQuady() << endl;
     // cout << "KILGONS' X POS: " << c.returnQuadx() << endl;
     // cout << "KILGONS' Y POS: " << c.returnQuady() << endl;
+    init();
+    test();
+    longScan();
     return 0;
 }

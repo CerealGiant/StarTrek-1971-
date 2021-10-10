@@ -13,6 +13,7 @@
 Enterprise player;
 list<kilgon> kilgons;
 list<Star> stars;
+list<starbase> starbases;
 extern string ss[10][24] = {
     {" - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "},
     {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "},
@@ -105,38 +106,48 @@ void init() {
 
   //Creating & Initating the list of kilgons
   
-  srand(time(0));
+  srand(time(NULL));
   int k = rand() % (20 + 1 - 5) + 5;
-  srand(time(0));
+  srand(time(NULL));
   for(int i = 0; i < k;i++) {
     kilgon *a = new kilgon;
     kilgons.push_back(*a);
   }
+      list<kilgon>::iterator ptr_3;
+      for(ptr_3 = kilgons.begin();ptr_3 != kilgons.end();ptr_3++) {
+          cout << "KILGONS' X POS: " << ptr_3->returnQuadx() << endl;
+          cout << "KILGONS' Y POS: " << ptr_3->returnQuady() << endl;
+      }
 
   //Creating & Initating the list of starbases(>!<)
-  list<starbase> starbases;
-  srand(time(0));
+
+  srand(time(NULL));
   int s = rand() % (5 + 1 - 1) + 1;
-  srand(time(0));
+  srand(time(NULL));
   for(int i = 0; i < s;i++) {
     starbase *a = new starbase;
     starbases.push_back(*a);
   }
+      list<starbase>::iterator ptr_1;
+      for(ptr_1 = starbases.begin();ptr_1 != starbases.end();ptr_1++) {
+          cout << "STARBASES' X POS: " << ptr_1->returnQuadx() << endl;
+          cout << "STARBASES' Y POS: " << ptr_1->returnQuady() << endl;
+      }
 
   //Creating & Initating the list of stars(*)
   
-  srand(time(0));
-  int st = rand() %  (15 + 1 - 8) + 8;
-  srand(time(0));
+  srand(time(NULL));
+  int st = rand() %  (20 + 1 - 8) + 8;
+  srand(time(NULL));
   for(int i = 0; i < st;i++) {
     Star *a = new Star;
     stars.push_back(*a);
   }
-    // list<Star>::iterator ptr;
-    // for(ptr = stars.begin();ptr != stars.end();ptr++) {
-    //     cout << "KILGONS' X POS: " << ptr->returnQuadx() << endl;
-    //     cout << "KILGONS' Y POS: " << ptr->returnQuady() << endl;
-    // }
+      list<Star>::iterator ptr;
+      for(ptr = stars.begin();ptr != stars.end();ptr++) {
+          cout << "STAR'S X POS: " << ptr->returnQuadx() << endl;
+          cout << "STAR'S Y POS: " << ptr->returnQuady() << endl;
+      }
 
 }
 
@@ -144,6 +155,34 @@ void init() {
 //Short Range Scan view.
 void shortRangeScan() {
   player.LoadPos();
+
+  //Loading the Stars in the quadrant.
+  list<Star>::iterator ptr;
+  for(ptr = stars.begin();ptr != stars.end();ptr++) {
+    if( (ptr->returnQuadx() == player.returnQuadx() ) && ptr->returnQuady() == player.returnQuady() ) {
+      //Same quadrant.
+      ptr->LoadPos();
+    }
+  }
+
+  //Loading the Kilgons in the quadrant.
+  list<kilgon>::iterator ptr_1;
+  for(ptr_1 = kilgons.begin();ptr_1 != kilgons.end();ptr_1++) {
+    if( (ptr_1->returnQuadx() == player.returnQuadx() ) && ptr_1->returnQuady() == player.returnQuady() ) {
+      //Same quadrant.
+      ptr_1->LoadPos();
+    }
+  }
+
+  //Loading the Starbases in the quadrant.
+  list<starbase>::iterator ptr_2;
+  for(ptr_2 = starbases.begin();ptr_2 != starbases.end();ptr_2++) {
+    if( (ptr_2->returnQuadx() == player.returnQuadx() ) && ptr_2->returnQuady() == player.returnQuady() ) {
+      //Same quadrant.
+      ptr_2->LoadPos();
+    }
+  }
+
 
   //Updating the board with the latest current pos values obtained from .LoadPos()
   for(int i =0; i < 10;i++) {
@@ -178,6 +217,9 @@ void commands() {
     break;
     case 1:
     shortRangeScan();
+    break;
+    case 2:
+    longScan();
     break;
     case 5:
     shieldset();
@@ -492,5 +534,72 @@ void shieldset() {
 }
 
 void longScan() {
+
+  cout<<"LONG RANGE SENSOR SCAN FOR QUADRANT "<<player.returnQuadx()<<" , "<<player.returnQuady()<<endl;
+  string longResults[5][7] = {
+    {"-------------------"},
+    {"|",longView(-1,-1),"|", longView(0,-1), "|", longView(1,-1), "|"},
+    {"|",longView(-1,0),"|", longView(0,0), "|", longView(1,0), "|"},
+    {"|",longView(-1,1),"|", longView(0,1), "|", longView(1,1), "|"},
+    {"-------------------"}
+  };
+  for(int i =0; i < 5;i++) {
+    for(int j =0;j < 7;j++) {
+      cout << longResults[i][j];
+    }
+    cout << "\n";
+  }
+  commands();
+}
+
+void test() {
+  cout << "ENTERPRISE'S X POS: " << player.returnQuadx() << endl;
+  cout << "ENTERPRISE'S Y POS: " << player.returnQuady() << endl;
+}
+
+string longView(int x,int y) {
+
+
+  int count = 0;
+  list<Star>::iterator ptr;
+  for(ptr = stars.begin();ptr != stars.end();ptr++ ) {
+    if(ptr->returnQuadx() == player.returnQuadx()+x ) {
+      if(ptr->returnQuady() == player.returnQuady()+y ) {
+        //Same quadrant
+        count++;
+      }
+    }
+  }
+  int count_1 = 0;
+  list<kilgon>::iterator ptr_1;
+    for(ptr_1 = kilgons.begin();ptr_1 != kilgons.end();ptr_1++ ) {
+    if(ptr_1->returnQuadx() == player.returnQuadx()+x ) {
+      if(ptr_1->returnQuady() == player.returnQuady()+y ) {
+        //Same quadrant
+        count_1++;
+      }
+    }
+  }
+
+  int count_2 = 0;
+  list<starbase>::iterator ptr_2;
+    for(ptr_2 = starbases.begin();ptr_2 != starbases.end();ptr_2++ ) {
+    if(ptr_2->returnQuadx() == player.returnQuadx()+x ) {
+      if(ptr_2->returnQuady() == player.returnQuady()+y ) {
+        //Same quadrant
+        count_2++;
+      }
+    }
+  }
+ int result = count + (count_2*10) + (count_1*100);
+  if(result == 0) {
+    return "000";
+  }else if(result < 10) {
+    return "00" + to_string(result);
+  }else if(result < 100) {
+    return "0" + to_string(result);
+  }else {
+    return to_string(result);
+  }
   
 }

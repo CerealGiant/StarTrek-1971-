@@ -1,7 +1,7 @@
 #ifndef STARBASE_H
 #define STARBASE_H
 #include "SpaceObjs.h"
-
+#include "IO.h"
 //Starbase is the  >!<
 class starbase: public SpaceObjects{
     private:
@@ -9,7 +9,7 @@ class starbase: public SpaceObjects{
     public:
     //Constructor
     starbase();
-
+    void LoadPos();
 
 
     

@@ -10,6 +10,7 @@
 #include "Star.h"
 #include "Starbase.h"
 #include <list>
+#include <map>
 using namespace std;
 
 void start();
@@ -19,6 +20,8 @@ void shortRangeScan();
 void movement();
 void commands();
 void shieldset();
-extern list<kilgon> kilgons;
+void longScan();
+void test();
+string longView(int x, int y);
 extern string ss[10][24];
 #endif
