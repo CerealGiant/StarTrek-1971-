@@ -10,6 +10,7 @@
 #include "Star.h"
 #include "Starbase.h"
 #include <list>
+#include <math.h>
 #include <map>
 using namespace std;
 
@@ -23,6 +24,8 @@ void shieldset();
 void longScan();
 void test();
 void pulseAttk();
+void photonAttk();
+void libraryComputer();
 string longView(int x, int y);
 extern string ss[10][24];
 #endif

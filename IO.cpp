@@ -171,6 +171,9 @@ void shortRangeScan() {
     if( (ptr_1->returnQuadx() == player.returnQuadx() ) && ptr_1->returnQuady() == player.returnQuady() ) {
       //Same quadrant.
       ptr_1->LoadPos();
+      if(player.getCondition() != "DOCKED") {
+      player.setCondition("RED");
+      }
     }
   }
 
@@ -231,6 +234,8 @@ void commands() {
     break;
     case 5:
     shieldset();
+    case 7:
+    libraryComputer();
     break;
   }
 }
@@ -273,6 +278,7 @@ void movement() {
       }else {
       player.setSecx( player.returnSecx() + (1*move) );
       }
+       
       break;
 
       case NORTH_EAST:
@@ -514,8 +520,31 @@ void movement() {
 
       break;
 
+
     }
 
+      list<starbase>::iterator ptr_a;
+      for(ptr_a = starbases.begin();ptr_a != starbases.end();ptr_a++) {
+      if( (ptr_a->returnQuadx() == player.returnQuadx() ) && ptr_a->returnQuady() == player.returnQuady() ) {
+        //Same quadrant.
+      if( (ptr_a->returnSecx() == player.returnSecx() ) && ptr_a->returnSecy() == player.returnSecy() ){
+          //Same Sector
+          player.setCondition("DOCKED");
+          cout << "SHIELDS DROPPED FOR DOCKING PURPOSES\n"<<endl;
+          int editedx = 1 + ( (player.returnSecx() -1) * 3 );
+          int editedy = player.returnSecy();
+          ss[editedy][editedx] = ">*<";
+          player.setArmor(0);
+          player.setEnergy(3000);
+      }else {
+          int editedx = 1 + ( (player.returnSecx() -1) * 3 );
+          int editedy = player.returnSecy();
+          ss[editedy][editedx] = ">!<";
+      }  
+
+      }
+
+      } 
 commands();
 
 }
@@ -645,8 +674,106 @@ void pulseAttk() {
       commands();
 }
 
+void libraryComputer() {
+  cout<<"OPTION: ";
+  int inpt;
+  scanf("%d",&inpt);
+  while(inpt < 0 || inpt > 2) {
+    cout <<"THE LIBRARY COMPUTER CONTAINS 3 OPTIONS:\n\n"<<endl;
+    cout<<"OPTION 0 = CUMULATIVE GALACTIC RECORD: SHOWS COMPUTER MEMORY OF THE RESULTS OF ALL PREVIOUS LONG RANGE SENSOR SCANS"<<endl;
+    cout<<"OPTION 1 = STATUS REPORT: SHOWS NUMBER OF KLINGONS, STARDATES AND STARBASES LEFT."<<endl;
+    cout<<" OPTION 2 = PHOTON TORPEDO DATA GIVES TRAJECTORY AND DISTANCE BETWEEN THE ENTERPRISE AND ALL KLINGONS IN YOUR QUADRANT"<<endl;
+    cout<<"OPTION: ";
+    scanf("%d",&inpt);   
+  }
+  switch(inpt) {
+    case 1:
+    cout<<"*********STATUS REPORT*********\n\n"<<endl;
+    cout<<"NUMBER OF KILGONS LEFT: "<<kilgons.size()<<endl;
+    cout<<"STARDATES:"<<endl;
+    cout<<"NUMBER OF STARBASES: "<<starbases.size()<<endl;
+    cout<<"*******************************"<<endl;
+    commands();
+    break;
 
-// void photonAttk() {
-//   int inpt;
-//   cout << "Enter Position"
-// }
+    case 2:
+    list<kilgon>::iterator ptr_1;
+    int x_diff,y_diff,input;
+    for(ptr_1 = kilgons.begin();ptr_1 != kilgons.end();ptr_1++){
+      if( (ptr_1->returnQuadx() == player.returnQuadx() ) && ptr_1->returnQuady() == player.returnQuady() ){
+        //Kilgon present in current quadrant 
+        x_diff = player.returnSecx() - ptr_1->returnSecx();
+        y_diff = player.returnSecy() - ptr_1->returnSecy();
+        if(x_diff > 0 && y_diff == 0) {
+          //East
+          cout <<"TRAJECTORY: "<<EAST<<endl;
+        }else if(x_diff > 0 && y_diff < 0) {
+          //North-East
+          cout <<"TRAJECTORY: "<<NORTH_EAST<<endl;
+        }else if(x_diff == 0 && y_diff < 0) {
+          //North
+          cout<<"TRAJECTORY: "<<NORTH<<endl;
+        }else if(x_diff < 0 && y_diff < 0) {
+          //North-West
+          cout<<"TRAJECTORY: "<<NORTH_WEST<<endl;
+        }else if(x_diff < 0 && y_diff == 0) {
+          cout<<"TRAJECTORY: "<<WEST<<endl;
+        }else if(x_diff < 0 && y_diff > 0) {
+          cout<<"TRAJECTORY: "<<SOUTH_WEST<<endl;
+        }else if(x_diff == 0 && y_diff > 0) {
+          cout<<"TRAJECTORY: "<<SOUTH<<endl;
+        }else if(x_diff > 0 && y_diff > 0) {
+          cout<<"TRAJECTORY: "<<SOUTH_EAST<<endl;
+        }
+    }
+  }
+  cout <<"TO USE CALCULATOR PRESS 1 or 0 to exit: ";
+  scanf("%d",&input);
+  while(input < 0 || input > 1) {
+    cout <<"TO USE CALCULATOR PRESS 1 or 0 to exit: ";
+    scanf("%d",&input);  
+  }
+  switch(input) {
+    case 0:
+    commands();
+    break;
+    case 1:
+    //Calculator
+    int x1,y1,x2,y2,diff_x,diff_y;
+    float dist;
+    cout <<"INPUT THE COORDINATES OF ENTERPRISE: ";
+    scanf("%d %d",&x1,&y1);
+    cout <<"INPUT THE COORDINATES OF ENEMY SHIP: ";
+    scanf("%d %d",&x2,&y2);
+    diff_x = x2 - x1;
+    diff_y = y2 - y1;
+    dist = sqrt( (diff_x*diff_x) + (diff_y*diff_y) );
+    cout <<"DISTANCE BETWEEN THE BOTH ARE: "<<dist<<"UNITS."<<endl;
+    commands();
+  }
+  break;
+
+}
+}
+
+void photonAttk() {
+  int traj,photonx = player.returnSecx(),photony = player.returnSecy();
+  cout << "COMPUTER INITIALISED. ENTER TRAJECTORY[1-8]: ";
+  scanf("%d",&traj);
+  list<kilgon>::iterator ptr_1;
+  for(ptr_1 = kilgons.begin();ptr_1 != kilgons.end();ptr_1++) {
+  if( (ptr_1->returnQuadx() == player.returnQuadx() ) && ptr_1->returnQuady() == player.returnQuady() ) {
+    //Kilgon is present in the current quadrant.
+    cout<<"PHOTON PATH:\n"<<endl;
+    switch(traj) {
+      case EAST:
+      while(photonx != ptr_1->returnSecx() && photonx != 8 ) {
+        cout<<"("<<photonx<<","<<photony<<")"<<endl;
+        photonx++;
+      }
+      break;
+
+    }
+  }
+  }
+}
