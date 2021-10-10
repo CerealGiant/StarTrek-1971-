@@ -202,19 +202,16 @@ void movement() {
       case EAST:
       player.tempPos(player.returnSecx(),player.returnSecy() );
       if( (player.returnSecx() + (1*move)) > 8 ) {
-        int value = (player.returnSecx() + (1*move)) - 8;
+        int value = (player.returnSecx() + (1*move));
         int count = 0;
-        if(value < 8) {
-          count+=1;
-        }
         while(value >= 8) {
           value = value - 8;
           count++;
         }
-        if( (player.returnQuadx() + (1*count)) > 64 ) {
-          cout << "TOO FAR OUT OF MAP!!!!"<<endl;
-          player.setQuadx(64);
-          player.setSecx(1);
+        if( (player.returnQuadx() + (1*count)) > 8 ) {
+          cout << "TOO FAR OUT OF THE GALAXY!"<<endl;
+          player.setQuadx(player.returnQuadx() );
+          player.setSecx(player.returnSecx() );
         }else {
         player.setQuadx(player.returnQuadx() + (1*count) );
         player.setSecx(value);
@@ -228,39 +225,41 @@ void movement() {
       case NORTH_EAST:
       player.tempPos(player.returnSecx(),player.returnSecy() );
       if( (player.returnSecx() + (1*move)) > 8 ) {
-        int value = (player.returnSecx() + (1*move)) - 8;
+        int value = (player.returnSecx() + (1*move));
         int count = 0;
-        if(value < 8) {
-          count+=1;
-        }
-        while(value > 8) {
+        while(value >= 8) {
           value = value - 8;
           count++;
         }
-        if( (player.returnQuadx() + (1*count)) > 64 ) {
-          cout << "TOO FAR OUT OF MAP!!!!"<<endl;
-          player.setQuadx(64);
-          player.setSecx(1);
+        if( (player.returnQuadx() + (1*count)) > 8 ) {
+          cout << "TOO FAR OUT OF THE GALAXY!"<<endl;
+          player.setQuadx(player.returnQuadx() );
+          player.setSecx(player.returnSecx() );
         }else {
         player.setQuadx(player.returnQuadx() + (1*count) );
         player.setSecx(value);
         }
-
       }else {
       player.setSecx( player.returnSecx() + (1*move) );
       }
+
       if((player.returnSecy() - (1*move) ) < 1 ) {
-        int value = player.returnSecy() - (1*move) + 8;
+        int value = player.returnSecy() - (1*move);
         int count = 0;
-        if(value > 0) {
-          count+=1;
-        }
         while(value <= 0) {
           value = value + 8;
           count++;
         }
+        if(player.returnQuady() - (1*count) <= 0) {
+          cout << "TOO FAR OUT OF THE GALAXY!"<<endl;
+         player.setSecy(player.returnSecy() );
+         player.setQuady(player.returnQuady() );
+        }else {
         player.setQuady(player.returnQuady() - (1*count) );
         player.setSecy(value);
+
+        }
+
       }else {
       player.setSecy(player.returnSecy() - (1*move) );
       }
@@ -269,14 +268,69 @@ void movement() {
 
       case NORTH:
       player.tempPos(player.returnSecx(),player.returnSecy() );
+      if((player.returnSecy() - (1*move) ) < 1) {
+        int value = player.returnSecy() - (1*move);
+        int count = 0;
+        while(value <= 0) {
+          value = value + 8;
+          count++;
+        }
+        if(player.returnQuady() - (1*count) <= 0 ) {
+         cout << "TOO FAR OUT OF THE GALAXY!"<<endl;
+         player.setSecy(player.returnSecy() );
+         player.setQuady(player.returnQuady() );          
+        }else {
+        player.setQuady(player.returnQuady() - (1*count) );
+        player.setSecy(value);
+        }
+
+      }else {
       player.setSecy(player.returnSecy() - (1*move) );
+      }
+
       break;
     
 
       case NORTH_WEST:
       player.tempPos(player.returnSecx(),player.returnSecy() );
+      if( (player.returnSecx() - (1*move)) < 1 ) {
+        int value = player.returnSecx() - (1*move);
+        int count = 0;
+        while(value <= 0) {
+          value = value - 8;
+          count++;
+        }
+        if(player.returnQuadx() - (1*count) <= 1 ) {
+          cout << "TOO FAR OUT OF THE GALAXY!"<<endl;
+          player.setSecx(player.returnSecx() );
+          player.setQuadx(player.returnQuadx() );
+        }else {
+        player.setQuadx(player.returnQuadx() - (1*count) );
+        player.setSecx(value);
+        }
+      }else {
       player.setSecx(player.returnSecx() - (1*move) );
+      }
+
+      if(player.returnSecy() - (1*move) < 1 ) {
+        int value = player.returnSecy() - (1*move);
+        int count = 0;
+        while(value <= 0 ) {
+          value = value - 8;
+          count++;
+        }
+        if(player.returnQuady() - (1*count) <= 0 ) {
+          cout << "TOO FAR OUT OF THE GALAXY!"<<endl;
+          player.setSecy(player.returnSecy() );
+          player.setQuady(player.returnQuady() );
+        }else {
+          player.setQuady(player.returnQuady() - (1*count) );
+          player.setSecy(value);
+        }
+      }else {
       player.setSecy(player.returnSecy() - (1*move) );
+      }
+
       break;
 
       case WEST:
