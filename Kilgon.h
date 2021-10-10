@@ -18,5 +18,18 @@ class kilgon: public SpaceObjects{
     }
     void LoadPos();
 
+    int getPulse() {
+    srand(time(NULL));
+    m_pulseattack = rand() % (240 +1-60) + 60;
+    return m_pulseattack;
+    }
+    int getArmor() {
+        return m_armor;
+    }
+    void setArmor(int a) {
+        m_armor = a;
+    }
+    void tempPos(int x, int y);
+
 };
 #endif

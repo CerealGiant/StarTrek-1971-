@@ -15,13 +15,15 @@
 
     int armor = rand() % (900 + 1 - 250) + 250;
     m_armor = armor;
+
+
 }
 
 void kilgon:: LoadPos() {
   //Loading Position
   int editedx = 1 + ( (m_secx -1) * 3 );
   int editedy = m_secy;
-  while(ss[editedy][editedx] != " - " ) {
+  while(ss[editedy][editedx] != " - " && ss[editedy][editedx] != "+++" ) {
     srand(time(0));
     m_secx = rand() % (8 + 1 - 1) + 1;
     m_secy = rand() % (8 + 1 - 1) + 1;
@@ -30,5 +32,10 @@ void kilgon:: LoadPos() {
   }
   ss[editedy][editedx] = "+++";
 
+}
 
+void kilgon:: tempPos(int x, int y) {
+  int editedx = 1 + ( (x -1) * 3 );
+  int editedy = y;
+  ss[editedy][editedx] = " - ";
 }

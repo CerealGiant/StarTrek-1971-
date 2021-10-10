@@ -22,6 +22,7 @@ void commands();
 void shieldset();
 void longScan();
 void test();
+void pulseAttk();
 string longView(int x, int y);
 extern string ss[10][24];
 #endif

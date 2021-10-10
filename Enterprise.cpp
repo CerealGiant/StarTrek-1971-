@@ -18,6 +18,10 @@
     m_photoncount = DEFAULTCOUNT;
     m_photonpower = 0;
     //m_photonpower > shield strength of the enemy.
+
+    //Randomly generating the pulse attack value
+    int p = rand() % (220 +1-60) + 60;
+    m_pulseattack = p;
 }
 
 void Enterprise:: LoadPos() {

@@ -211,6 +211,11 @@ void commands() {
   cout << "COMMAND: ";
   //The commands range from 0-9.
   scanf("%d",&input);
+  while(input < 0 || input > 7 ) {
+    cout <<"0 = SET COURSE\n1 = SHORT RANGE SENSOR SCAN\n2 = LONG RANGE SENSOR SCAN\n3 = FIRE PHASERS\n4 = FIRE PHOTON TORPEDOES\n5 = SHIELD CONTROL\n6 = DAMAGE CONTROL REPORT\n7 = CALL ON LIBRARY COMPUTER\n\n"<<endl;
+    cout << "COMMAND: ";
+    scanf("%d",&input);
+  }
   switch(input) {
     case 0:
     movement();
@@ -220,6 +225,9 @@ void commands() {
     break;
     case 2:
     longScan();
+    break;
+    case 3:
+    pulseAttk();
     break;
     case 5:
     shieldset();
@@ -603,3 +611,42 @@ string longView(int x,int y) {
   }
   
 }
+
+void pulseAttk() {
+  int inpt,enemy,p;
+  list<kilgon>::iterator ptr_1;
+  for(ptr_1 = kilgons.begin();ptr_1 != kilgons.end();ptr_1++) {
+    if( (ptr_1->returnQuadx() == player.returnQuadx() ) && ptr_1->returnQuady() == player.returnQuady() ) {
+      while(player.getArmor() >= 0 && ptr_1->getArmor() > 0 ) {
+      cout << "TARGET ACQUIRED! ATTACKING...."<<endl;
+      cout <<"ENTER ENERGY TO BE USED: ";
+      scanf("%d",&inpt);
+      p = player.getPulse();
+      player.setEnergy(player.getEnergy() - inpt);
+      enemy = ptr_1->getPulse();
+      player.setArmor(player.getArmor() - enemy);
+      ptr_1->setArmor(ptr_1->getArmor() - p);
+      if(ptr_1->getArmor() > 0 || player.getArmor() > 0) {
+      cout <<"ENTERPRISE HIT TARGET WITH "<<p<<"UNITS("<<player.getArmor()<<"SHIELD LEFT)"<<endl;
+      cout <<"KILGON HIT ENTERPRISE WITH "<<enemy<<"UNITS("<<ptr_1->getArmor()<<"ENERGY LEFT)"<<endl;
+      }
+      }
+      if(ptr_1->getArmor() <= 0) {
+        //Enemy has been killed.
+        ptr_1->tempPos(ptr_1->returnSecx(),ptr_1->returnSecy() );          
+        kilgons.erase(ptr_1);  
+        cout << "*********KILGON HAS BEEN KILLED*********"<<endl;
+        commands();
+      }
+
+    }
+  }
+      cout << "KILGONS NOT DETECTED!"<<endl;
+      commands();
+}
+
+
+// void photonAttk() {
+//   int inpt;
+//   cout << "Enter Position"
+// }

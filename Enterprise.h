@@ -8,7 +8,7 @@
 //Enterprise is <*>(The Player)
 class Enterprise: public SpaceObjects{
     private:
-    int m_photoncount,m_photonpower,m_energy;
+    int m_photoncount,m_photonpower,m_energy,m_pulseattack;
     string m_condition;
 
     public:
@@ -54,6 +54,13 @@ class Enterprise: public SpaceObjects{
     }
     void setArmor(int a) {
         m_armor = a;
+    }
+    int getPulse() {
+        while(m_pulseattack > m_energy) {
+            srand(time(NULL));
+            m_pulseattack = rand() % (220 +1-60) + 60;
+        }
+        return m_pulseattack;
     }
 };
 #endif
