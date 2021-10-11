@@ -14,6 +14,7 @@ Enterprise player;
 list<kilgon> kilgons;
 list<Star> stars;
 list<starbase> starbases;
+map<int ,string>Records;
 extern string ss[10][24] = {
     {" - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "},
     {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "},
@@ -107,7 +108,7 @@ void init() {
   //Creating & Initating the list of kilgons
   
   srand(time(NULL));
-  int k = rand() % (20 + 1 - 5) + 5;
+  int k = 1;
   srand(time(NULL));
   for(int i = 0; i < k;i++) {
     kilgon *a = new kilgon;
@@ -154,37 +155,50 @@ void init() {
 
 //Short Range Scan view.
 void shortRangeScan() {
+  //Resetting the view to default to prevent double loading of the elements.
+  for(int i =1;i < 9;i++) {
+    for(int j =0;j < 24;j++) {
+      ss[i][j] = " - ";
+    }
+  }
+  player.setCondition("GREEN");
+
   player.LoadPos();
 
   //Loading the Stars in the quadrant.
   list<Star>::iterator ptr;
   for(ptr = stars.begin();ptr != stars.end();ptr++) {
-    if( (ptr->returnQuadx() == player.returnQuadx() ) && ptr->returnQuady() == player.returnQuady() ) {
-      //Same quadrant.
+    if( (ptr->returnQuadx() == player.returnQuadx() ) && ptr->returnQuady() == player.returnQuady()  ) {
       ptr->LoadPos();
     }
-  }
+  }  
 
   //Loading the Kilgons in the quadrant.
   list<kilgon>::iterator ptr_1;
   for(ptr_1 = kilgons.begin();ptr_1 != kilgons.end();ptr_1++) {
-    if( (ptr_1->returnQuadx() == player.returnQuadx() ) && ptr_1->returnQuady() == player.returnQuady() ) {
+    if((ptr_1->returnQuadx() == player.returnQuadx() ) && ptr_1->returnQuady() == player.returnQuady() ) {
       //Same quadrant.
       ptr_1->LoadPos();
       if(player.getCondition() != "DOCKED") {
       player.setCondition("RED");
-      }
+      player.setTempCond("RED");
+      }      
     }
   }
 
   //Loading the Starbases in the quadrant.
   list<starbase>::iterator ptr_2;
   for(ptr_2 = starbases.begin();ptr_2 != starbases.end();ptr_2++) {
-    if( (ptr_2->returnQuadx() == player.returnQuadx() ) && ptr_2->returnQuady() == player.returnQuady() ) {
-      //Same quadrant.
+    if( (ptr_2->returnQuadx() == player.returnQuadx() ) && ptr_2->returnQuady() == player.returnQuady()  ) {
+      if(ptr_2->returnSecx() == player.returnSecx() && ptr_2->returnSecy() == player.returnSecy() ) {
+        ptr_2->docked();
+        continue;
+      }
       ptr_2->LoadPos();
     }
   }
+
+  
 
 
   //Updating the board with the latest current pos values obtained from .LoadPos()
@@ -232,6 +246,9 @@ void commands() {
     case 3:
     pulseAttk();
     break;
+    case 4:
+    photonAttk();
+    break;
     case 5:
     shieldset();
     case 7:
@@ -266,6 +283,10 @@ void movement() {
           value = value - 8;
           count++;
         }
+        // if(value == 0){
+        //   value = 8;
+        //   count-=1;
+        // }
         if( (player.returnQuadx() + (1*count)) > 8 ) {
           cout << "X: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
           player.setQuadx(player.returnQuadx() );
@@ -290,6 +311,10 @@ void movement() {
           value = value - 8;
           count++;
         }
+        // if(value == 0) {
+        //   value = 8;
+        //   count-=1;
+        // }
         if( (player.returnQuadx() + (1*count)) > 8 ) {
           cout << "X: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
           player.setQuadx(player.returnQuadx() );
@@ -309,6 +334,10 @@ void movement() {
           value = value + 8;
           count++;
         }
+        // if(value == 8) {
+        //   value = 1;
+        //   count+=1;
+        // }
         if(player.returnQuady() - (1*count) < 1) {
           cout << "Y: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
          player.setSecy(player.returnSecy() );
@@ -334,6 +363,10 @@ void movement() {
           value = value + 8;
           count++;
         }
+        // if(value == 8) {
+        //   value = 1;
+        //   count+=1;
+        // }
         if(player.returnQuady() - (1*count) < 1 ) {
          cout << "Y: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
          player.setSecy(player.returnSecy() );
@@ -359,6 +392,10 @@ void movement() {
           value = value + 8;
           count++;
         }
+        // if(value == 8) {
+        //   value = 1;
+        //   count+=1;
+        // }
         if((player.returnQuadx() - (1*count) ) < 1 ) {
           cout << "X: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
           player.setSecx(player.returnSecx() );
@@ -378,6 +415,10 @@ void movement() {
           value = value + 8;
           count++;
         }
+        // if(value == 8) {
+        //   value = 1;
+        //   count+=1;
+        // }
         if((player.returnQuady() - (1*count)) < 1 ) {
           cout << "Y: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
           player.setSecy(player.returnSecy() );
@@ -401,6 +442,10 @@ void movement() {
           value = value + 8;
           count++;
         }
+        // if(value == 8) {
+        //   value = 1;
+        //   count+=1;
+        // }
         if( (player.returnQuadx() - (1*count)) < 1) {
           cout << "X: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
           player.setQuadx(player.returnQuadx() );
@@ -424,6 +469,10 @@ void movement() {
           value = value + 8;
           count++;
         }
+        // if(value == 8) {
+        //   value = 1;
+        //   count+=1;
+        // }
         if(player.returnQuadx() - (1*count) < 1) {
           cout << "X: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
           player.setQuadx(player.returnQuadx() );
@@ -442,6 +491,10 @@ void movement() {
           value = value - 8;
           count++;
         }
+        // if(value == 0) {
+        //   value = 8;
+        //   count-=1;
+        // }
         if(player.returnQuady() + (1*count) > 8) {
           cout <<"Y: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
           player.setSecy(player.returnSecy() );
@@ -465,6 +518,10 @@ void movement() {
           value = value - 8;
           count++;
         }
+        // if(value == 0) {
+        //   value = 8;
+        //   count-=1;
+        // }
         if(player.returnQuady() + (1*count) > 8) {
           cout <<"Y: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
           player.setSecy(player.returnSecy() );
@@ -488,6 +545,10 @@ void movement() {
           value = value - 8;
           count++;
         }
+        // if(value == 0) {
+        //     value = 8;
+        //     count-=1;
+        //   }
         if(player.returnQuadx() + (1*count) > 8) {
           cout << "X: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
           player.setSecx(player.returnSecx() );
@@ -506,6 +567,10 @@ void movement() {
           value = value - 8;
           count++;
         }
+        // if(value == 0) {
+        //     value = 8;
+        //     count-=1;
+        //   }
         if(player.returnQuady() + (1*count) > 8 ) {
           cout<<"Y: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
           player.setSecy(player.returnSecy() );
@@ -523,28 +588,30 @@ void movement() {
 
     }
 
-      list<starbase>::iterator ptr_a;
-      for(ptr_a = starbases.begin();ptr_a != starbases.end();ptr_a++) {
-      if( (ptr_a->returnQuadx() == player.returnQuadx() ) && ptr_a->returnQuady() == player.returnQuady() ) {
-        //Same quadrant.
-      if( (ptr_a->returnSecx() == player.returnSecx() ) && ptr_a->returnSecy() == player.returnSecy() ){
-          //Same Sector
-          player.setCondition("DOCKED");
-          cout << "SHIELDS DROPPED FOR DOCKING PURPOSES\n"<<endl;
-          int editedx = 1 + ( (player.returnSecx() -1) * 3 );
-          int editedy = player.returnSecy();
-          ss[editedy][editedx] = ">*<";
-          player.setArmor(0);
-          player.setEnergy(3000);
-      }else {
-          int editedx = 1 + ( (player.returnSecx() -1) * 3 );
-          int editedy = player.returnSecy();
-          ss[editedy][editedx] = ">!<";
-      }  
+      // list<starbase>::iterator ptr_a;
+      // for(ptr_a = starbases.begin();ptr_a != starbases.end();ptr_a++) {
+      // if( (ptr_a->returnQuadx() == player.returnQuadx() ) && ptr_a->returnQuady() == player.returnQuady() ) {
+      //   //Same quadrant.
+      // if( (ptr_a->returnSecx() == player.returnSecx() ) && ptr_a->returnSecy() == player.returnSecy() ){
+      //     //Same Sector
+      //     player.setTempCond(player.getCondition() );
+      //     player.setCondition("DOCKED");
+      //     cout << "SHIELDS DROPPED FOR DOCKING PURPOSES\n"<<endl;
+      //     int editedx = 1 + ( (ptr_a->returnSecx() -1) * 3 );
+      //     int editedy = ptr_a->returnSecy();
+      //     ss[editedy][editedx] = ">*<";
+      //     player.setArmor(0);
+      //     player.setEnergy(3000);
+      //    }else {
+      //      int editedx = 1 + ( (ptr_a->returnSecx() -1) * 3 );
+      //      int editedy = ptr_a->returnSecy();
+      //      ss[editedy][editedx] = ">!<";
+      //      player.setCondition(player.getTempCond() );
+      //  }  
 
-      }
+      // }
 
-      } 
+      // } 
 commands();
 
 }
@@ -665,7 +732,17 @@ void pulseAttk() {
         ptr_1->tempPos(ptr_1->returnSecx(),ptr_1->returnSecy() );          
         kilgons.erase(ptr_1);  
         cout << "*********KILGON HAS BEEN KILLED*********"<<endl;
-        commands();
+        if(kilgons.size() == 0) {
+        cout<<"ALL THE KILGONS HAVE BEEN DESTROYED! GAME OVER"<<endl;
+        exit(1);
+        }else {
+          commands();
+        }
+
+      }
+      if(player.getArmor() <= 0) {
+        cout<<"*******ENTERPRISE HAS BEEN DESTROYED!! GAME OVER*******"<<endl;
+        exit(1);
       }
 
     }
@@ -680,15 +757,20 @@ void libraryComputer() {
   scanf("%d",&inpt);
   while(inpt < 0 || inpt > 2) {
     cout <<"THE LIBRARY COMPUTER CONTAINS 3 OPTIONS:\n\n"<<endl;
-    cout<<"OPTION 0 = CUMULATIVE GALACTIC RECORD: SHOWS COMPUTER MEMORY OF THE RESULTS OF ALL PREVIOUS LONG RANGE SENSOR SCANS"<<endl;
-    cout<<"OPTION 1 = STATUS REPORT: SHOWS NUMBER OF KLINGONS, STARDATES AND STARBASES LEFT."<<endl;
-    cout<<" OPTION 2 = PHOTON TORPEDO DATA GIVES TRAJECTORY AND DISTANCE BETWEEN THE ENTERPRISE AND ALL KLINGONS IN YOUR QUADRANT"<<endl;
+    cout<<"OPTION 0 = CUMULATIVE GALACTIC RECORD"<<endl;
+    cout<<"OPTION 1 = STATUS REPORT"<<endl;
+    cout<<"OPTION 2 = PHOTON TORPEDO TRAJECTORY DATA"<<endl;
     cout<<"OPTION: ";
     scanf("%d",&inpt);   
   }
   switch(inpt) {
+    //Cumulative Record
+    case 0:
+    
+    break;
+    //Status Report
     case 1:
-    cout<<"*********STATUS REPORT*********\n\n"<<endl;
+    cout<<"*********STATUS REPORT*********"<<endl;
     cout<<"NUMBER OF KILGONS LEFT: "<<kilgons.size()<<endl;
     cout<<"STARDATES:"<<endl;
     cout<<"NUMBER OF STARBASES: "<<starbases.size()<<endl;
@@ -696,14 +778,15 @@ void libraryComputer() {
     commands();
     break;
 
+    //Calculator + Trajectory detector.
     case 2:
     list<kilgon>::iterator ptr_1;
     int x_diff,y_diff,input;
     for(ptr_1 = kilgons.begin();ptr_1 != kilgons.end();ptr_1++){
       if( (ptr_1->returnQuadx() == player.returnQuadx() ) && ptr_1->returnQuady() == player.returnQuady() ){
         //Kilgon present in current quadrant 
-        x_diff = player.returnSecx() - ptr_1->returnSecx();
-        y_diff = player.returnSecy() - ptr_1->returnSecy();
+        x_diff = ptr_1->returnSecx() - player.returnSecx();
+        y_diff = ptr_1->returnSecy() - player.returnSecy();
         if(x_diff > 0 && y_diff == 0) {
           //East
           cout <<"TRAJECTORY: "<<EAST<<endl;
@@ -767,13 +850,209 @@ void photonAttk() {
     cout<<"PHOTON PATH:\n"<<endl;
     switch(traj) {
       case EAST:
-      while(photonx != ptr_1->returnSecx() && photonx != 8 ) {
+      while(photonx < ptr_1->returnSecx() && photonx != 8 ) {
         cout<<"("<<photonx<<","<<photony<<")"<<endl;
         photonx++;
       }
+      if(photonx == ptr_1->returnSecx() && photony == ptr_1->returnSecy() ) {
+        //Kilgon killed.
+        if(player.getPhotonCount() > 0) {
+        player.setPhotonCount(player.getPhotonCount() - 1);
+        ptr_1->tempPos(ptr_1->returnSecx(),ptr_1->returnSecy() );          
+        kilgons.erase(ptr_1);  
+        cout <<"KILGON SUCCESSFULLY HIT!"<<endl;
+        }else {
+          cout<<"NO MORE PHOTONS. ATTACK FAILED!"<<endl;
+        }
+
+      }else {
+        cout << "MISSED KILGON!!"<<endl;
+        player.setPhotonCount(player.getPhotonCount() - 1);
+      }
       break;
 
+      case NORTH_EAST:
+      while(photonx < ptr_1->returnSecx() && photonx != 8 ) {
+        cout<<"("<<photonx<<","<<photony<<")"<<endl;
+        photonx++;        
+      }
+      while(photony > ptr_1->returnSecy() && photony != 0 ) {
+        cout<<"("<<photonx<<","<<photony<<")"<<endl;
+        photony--;        
+      }      
+      if(photonx == ptr_1->returnSecx() && photony == ptr_1->returnSecy() ) {
+        //Kilgon killed.
+        if(player.getPhotonCount() > 0) {
+        player.setPhotonCount(player.getPhotonCount() - 1);
+        ptr_1->tempPos(ptr_1->returnSecx(),ptr_1->returnSecy() );          
+        kilgons.erase(ptr_1);  
+        cout <<"KILGON SUCCESSFULLY HIT!"<<endl;
+        }else {
+          cout<<"NO MORE PHOTONS. ATTACK FAILED!"<<endl;
+        }
+      }else {
+        cout << "MISSED KILGON!!"<<endl;
+        player.setPhotonCount(player.getPhotonCount() - 1);        
+      }
+      break;
+      case NORTH:
+      while(photony > ptr_1->returnSecy() && photony != 0 ) {
+        cout<<"("<<photonx<<","<<photony<<")"<<endl;
+        photony--;        
+      } 
+      if(photonx == ptr_1->returnSecx() && photony == ptr_1->returnSecy() ) {
+        //Kilgon killed.
+        if(player.getPhotonCount() > 0) {
+        player.setPhotonCount(player.getPhotonCount() - 1);
+        ptr_1->tempPos(ptr_1->returnSecx(),ptr_1->returnSecy() );          
+        kilgons.erase(ptr_1);  
+        cout <<"KILGON SUCCESSFULLY HIT!"<<endl;
+        }else {
+          cout<<"NO MORE PHOTONS. ATTACK FAILED!"<<endl;
+        }
+      }else {
+        cout << "MISSED KILGON!!"<<endl;
+        player.setPhotonCount(player.getPhotonCount() - 1);        
+      }
+      break; 
+
+      case NORTH_WEST:
+      while(photonx > ptr_1->returnSecx() && photonx != 0 ) {
+        cout<<"("<<photonx<<","<<photony<<")"<<endl;
+        photonx--;        
+      }      
+      while(photony > ptr_1->returnSecy() && photony != 0 ) {
+        cout<<"("<<photonx<<","<<photony<<")"<<endl;
+        photony--;        
+      }
+      if(photonx == ptr_1->returnSecx() && photony == ptr_1->returnSecy() ) {
+        //Kilgon killed.
+        if(player.getPhotonCount() > 0) {
+        player.setPhotonCount(player.getPhotonCount() - 1);
+        ptr_1->tempPos(ptr_1->returnSecx(),ptr_1->returnSecy() );          
+        kilgons.erase(ptr_1);  
+        cout <<"KILGON SUCCESSFULLY HIT!"<<endl;
+        }else {
+          cout<<"NO MORE PHOTONS. ATTACK FAILED!"<<endl;
+        }
+      }else {
+        cout << "MISSED KILGON!!"<<endl;
+        player.setPhotonCount(player.getPhotonCount() - 1);        
+      }
+      break;
+
+      case WEST:
+      while(photonx > ptr_1->returnSecx() && photonx != 0 ) {
+        cout<<"("<<photonx<<","<<photony<<")"<<endl;
+        photonx--;        
+      }
+      if(photonx == ptr_1->returnSecx() && photony == ptr_1->returnSecy() ) {
+        //Kilgon killed.
+        if(player.getPhotonCount() > 0) {
+        player.setPhotonCount(player.getPhotonCount() - 1);
+        ptr_1->tempPos(ptr_1->returnSecx(),ptr_1->returnSecy() );          
+        kilgons.erase(ptr_1);  
+        cout <<"KILGON SUCCESSFULLY HIT!"<<endl;
+        }else {
+          cout<<"NO MORE PHOTONS. ATTACK FAILED!"<<endl;
+        }
+      }else {
+        cout << "MISSED KILGON!!"<<endl;
+        player.setPhotonCount(player.getPhotonCount() - 1);        
+      }
+      break;
+
+      case SOUTH_WEST:
+      while(photonx > ptr_1->returnSecx() && photonx != 0 ) {
+        cout<<"("<<photonx<<","<<photony<<")"<<endl;
+        photonx--;        
+      }
+      while(photony < ptr_1->returnSecy() && photony != 8 ) {
+        cout<<"("<<photonx<<","<<photony<<")"<<endl;
+        photony++;        
+      }
+      if(photonx == ptr_1->returnSecx() && photony == ptr_1->returnSecy() ) {
+        //Kilgon killed.
+        if(player.getPhotonCount() > 0) {
+        player.setPhotonCount(player.getPhotonCount() - 1);
+        ptr_1->tempPos(ptr_1->returnSecx(),ptr_1->returnSecy() );          
+        kilgons.erase(ptr_1);  
+        cout <<"KILGON SUCCESSFULLY HIT!"<<endl;
+        }else {
+          cout<<"NO MORE PHOTONS. ATTACK FAILED!"<<endl;
+        }
+      }else {
+        cout << "MISSED KILGON!!"<<endl;
+        player.setPhotonCount(player.getPhotonCount() - 1);        
+      }
+      break;
+
+      case SOUTH:
+      while(photony < ptr_1->returnSecy() && photony != 8 ) {
+        cout<<"("<<photonx<<","<<photony<<")"<<endl;
+        photony++;        
+      }
+      if(photonx == ptr_1->returnSecx() && photony == ptr_1->returnSecy() ) {
+        //Kilgon killed.
+        if(player.getPhotonCount() > 0) {
+        player.setPhotonCount(player.getPhotonCount() - 1);
+        ptr_1->tempPos(ptr_1->returnSecx(),ptr_1->returnSecy() );          
+        kilgons.erase(ptr_1);  
+        cout <<"KILGON SUCCESSFULLY HIT!"<<endl;
+        }else {
+          cout<<"NO MORE PHOTONS. ATTACK FAILED!"<<endl;
+        }
+      }else {
+        cout << "MISSED KILGON!!"<<endl;
+        player.setPhotonCount(player.getPhotonCount() - 1);        
+      }
+      break;
+
+      case SOUTH_EAST:
+      while(photony < ptr_1->returnSecy() && photony != 8 ) {
+        cout<<"("<<photonx<<","<<photony<<")"<<endl;
+        photony++;        
+      }
+      while(photonx < ptr_1->returnSecx() && photonx != 8 ) {
+        cout<<"("<<photonx<<","<<photony<<")"<<endl;
+        photonx++;        
+      }
+      if(photonx == ptr_1->returnSecx() && photony == ptr_1->returnSecy() ) {
+        //Kilgon killed.
+        if(player.getPhotonCount() > 0) {
+        player.setPhotonCount(player.getPhotonCount() - 1);
+        ptr_1->tempPos(ptr_1->returnSecx(),ptr_1->returnSecy() );          
+        kilgons.erase(ptr_1);  
+        cout <<"KILGON SUCCESSFULLY HIT!"<<endl;
+        }else {
+          cout<<"NO MORE PHOTONS. ATTACK FAILED!"<<endl;
+        }
+      }else {
+        cout << "MISSED KILGON!!"<<endl;
+        player.setPhotonCount(player.getPhotonCount() - 1);        
+      }
+      break;                                                                   
     }
+    if(kilgons.size() == 0) {
+      cout<<"ALL THE KILGONS HAVE BEEN DESTROYED!! GAME OVER"<<endl;
+      exit(1);
+    }else {
+    commands();
+    }
+
   }
+
   }
+  if(player.getPhotonCount() > 0) {
+  cout<<"NO KILGON DETECTED! PHOTON WASTED!"<<endl;
+  player.setPhotonCount(player.getPhotonCount() - 1);
+  commands();
+  }else {
+    cout<<"NO PHOTONS & NO KILGON DETECTED!"<<endl;
+    commands();
+  }
+
+
 }
+
+

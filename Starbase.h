@@ -10,8 +10,8 @@ class starbase: public SpaceObjects{
     //Constructor
     starbase();
     void LoadPos();
-
-
+    void tempPos(int x,int y);
+    void docked();
     
 
 };

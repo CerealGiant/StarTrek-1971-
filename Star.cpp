@@ -30,3 +30,10 @@ void Star:: LoadPos() {
 
 
 }
+
+void Star:: tempPos(int x, int y) {
+  int editedx = 1 + ( (x -1) * 3 );
+  int editedy = y;  
+  ss[editedy][editedx] = " - ";
+
+} 

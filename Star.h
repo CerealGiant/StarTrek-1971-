@@ -11,7 +11,7 @@ class Star: public SpaceObjects{
     //Constructor to load default values.
     Star();
     void LoadPos();
-
-
+    void tempPos(int x, int y);
+    
 };
 #endif

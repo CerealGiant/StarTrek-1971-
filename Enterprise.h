@@ -9,7 +9,7 @@
 class Enterprise: public SpaceObjects{
     private:
     int m_photoncount,m_photonpower,m_energy,m_pulseattack;
-    string m_condition;
+    string m_condition,m_tempcondition;
 
     public:
     //Constructor to load default values.
@@ -61,6 +61,12 @@ class Enterprise: public SpaceObjects{
             m_pulseattack = rand() % (220 +1-60) + 60;
         }
         return m_pulseattack;
+    }
+    void setTempCond(string t) {
+        m_tempcondition = t;
+    }
+    string getTempCond() {
+        return m_tempcondition;
     }
 };
 #endif
