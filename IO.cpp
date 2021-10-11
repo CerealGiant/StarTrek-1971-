@@ -77,7 +77,9 @@ void start() {
 
 //Displays the game instructions in order.
 void instructions() {
+  //Character to take in input on the instructions screen
   char *cont = new char(1);
+  //Opening file that contains the instructions(1)
   FILE *fp;
   char *str = new char[sizeof(char)*500];
   fp = fopen("Instructions.txt","r");
@@ -91,6 +93,7 @@ void instructions() {
   cout <<"\n Press anything to continue....";
   fgets(cont,sizeof(cont),stdin);
   cout <<"\n\n";
+  //Opening file that contains the instructions(1)
   fp = fopen("Instructions(2).txt","r");
   if(fp == NULL) {
     printf("Error!");
@@ -100,6 +103,7 @@ void instructions() {
     printf("%s",str);
   } 
   fclose(fp);
+  //End of instructions
   cout <<"\n Press anything to continue....";
   fgets(cont,sizeof(cont),stdin);
 }
@@ -107,10 +111,7 @@ void instructions() {
 //Initalising the Enterprise,Kilgons,Stars and Starbases
 void init() {
 
-
-
   //Creating & Initating the list of kilgons
-  
   srand(time(NULL));
   int k = 1;
   srand(time(NULL));
@@ -118,6 +119,7 @@ void init() {
     kilgon *a = new kilgon;
     kilgons.push_back(*a);
   }
+  //TESTING: shows the positions(quadrant) as output to check against.
       list<kilgon>::iterator ptr_3;
       for(ptr_3 = kilgons.begin();ptr_3 != kilgons.end();ptr_3++) {
           cout << "KILGONS' X POS: " << ptr_3->returnQuadx() << endl;
@@ -133,6 +135,7 @@ void init() {
     starbase *a = new starbase;
     starbases.push_back(*a);
   }
+    //TESTING: shows the positions(quadrant) as output to check against.
       list<starbase>::iterator ptr_1;
       for(ptr_1 = starbases.begin();ptr_1 != starbases.end();ptr_1++) {
           cout << "STARBASES' X POS: " << ptr_1->returnQuadx() << endl;
@@ -140,7 +143,7 @@ void init() {
       }
 
   //Creating & Initating the list of stars(*)
-  
+
   srand(time(NULL));
   int st = rand() %  (20 + 1 - 8) + 8;
   srand(time(NULL));
@@ -148,6 +151,7 @@ void init() {
     Star *a = new Star;
     stars.push_back(*a);
   }
+    //TESTING: shows the positions(quadrant) as output to check against.
       list<Star>::iterator ptr;
       for(ptr = stars.begin();ptr != stars.end();ptr++) {
           cout << "STAR'S X POS: " << ptr->returnQuadx() << endl;
@@ -165,14 +169,17 @@ void shortRangeScan() {
       ss[i][j] = " - ";
     }
   }
+  //Setting initial condition of the player
   player.setCondition("GREEN");
 
+  //Loading position of the player.
   player.LoadPos();
 
   //Loading the Stars in the quadrant.
   list<Star>::iterator ptr;
   for(ptr = stars.begin();ptr != stars.end();ptr++) {
     if( (ptr->returnQuadx() == player.returnQuadx() ) && ptr->returnQuady() == player.returnQuady()  ) {
+      //Same Quadrant as player
       ptr->LoadPos();
     }
   }  
@@ -181,9 +188,9 @@ void shortRangeScan() {
   list<kilgon>::iterator ptr_1;
   for(ptr_1 = kilgons.begin();ptr_1 != kilgons.end();ptr_1++) {
     if((ptr_1->returnQuadx() == player.returnQuadx() ) && ptr_1->returnQuady() == player.returnQuady() ) {
-      //Same quadrant.
+      //Same quadrant as player
       ptr_1->LoadPos();
-      if(player.getCondition() != "DOCKED") {
+      if(player.getCondition() != "DOCKED") {//If player is docked in the Starbase)
       player.setCondition("RED");
       player.setTempCond("RED");
       }      
@@ -195,7 +202,11 @@ void shortRangeScan() {
   for(ptr_2 = starbases.begin();ptr_2 != starbases.end();ptr_2++) {
     if( (ptr_2->returnQuadx() == player.returnQuadx() ) && ptr_2->returnQuady() == player.returnQuady()  ) {
       if(ptr_2->returnSecx() == player.returnSecx() && ptr_2->returnSecy() == player.returnSecy() ) {
+        player.setCondition("DOCKED");
+        cout << "SHIELDS DROPPED FOR DOCKING PURPOSES\n"<<endl;
         ptr_2->docked();
+        player.setArmor(0);
+        player.setEnergy(3000);
         continue;
       }
       ptr_2->LoadPos();
@@ -275,8 +286,9 @@ void movement() {
   cout << "Warp Factor[0-8]: ";
   scanf("%f",&warp_factor);
 
-
+    //move = number of 1/8th part of quadrants moved.
     int move = warp_factor / 0.125;
+    
     switch(course) {
       case EAST:
       player.tempPos(player.returnSecx(),player.returnSecy() );
@@ -619,7 +631,7 @@ void movement() {
 commands();
 
 }
-
+//To set shield strength.
 void shieldset() {
   int shield_temp = player.getArmor();
   int shield;
@@ -657,7 +669,7 @@ void longScan() {
     }
     cout << "\n";
   }
-  //int number = (player.returnQuady() * 10) + player.returnQuadx();
+ 
 
   commands();
   
