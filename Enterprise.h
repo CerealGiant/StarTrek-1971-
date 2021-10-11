@@ -7,7 +7,7 @@
 
 //Enterprise is <*>(The Player)
 class Enterprise: public SpaceObjects{
-    private:
+    protected:
     int m_photoncount,m_photonpower,m_energy,m_pulseattack;
     string m_condition,m_tempcondition;
 

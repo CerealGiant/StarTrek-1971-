@@ -4,7 +4,7 @@
 #include "IO.h"
 //Starbase is the  >!<
 class starbase: public SpaceObjects{
-    private:
+    protected:
 
     public:
     //Constructor

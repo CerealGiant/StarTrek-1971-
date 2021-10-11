@@ -1,8 +1,7 @@
 #ifndef STAR_H
 #define STAR_H
-#include "IO.h"
 #include "SpaceObjs.h"
-
+#include "IO.h"
 //Star is the *
 class Star: public SpaceObjects{
     

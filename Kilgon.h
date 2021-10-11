@@ -4,7 +4,7 @@
 #include "IO.h"
 //Enemy is the +++(Kilgon)
 class kilgon: public SpaceObjects{
-    private:
+    protected:
 
     public:
     //Constructor

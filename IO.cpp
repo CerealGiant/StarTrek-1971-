@@ -11,10 +11,13 @@
 
 //Creating & Initialising the player(<*>)
 Enterprise player;
+
 list<kilgon> kilgons;
 list<Star> stars;
 list<starbase> starbases;
-map<int ,string>Records;
+//map<int ,string>Records;
+
+
 extern string ss[10][24] = {
     {" - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "},
     {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "},
@@ -103,6 +106,7 @@ void instructions() {
 
 //Initalising the Enterprise,Kilgons,Stars and Starbases
 void init() {
+
 
 
   //Creating & Initating the list of kilgons
@@ -653,7 +657,10 @@ void longScan() {
     }
     cout << "\n";
   }
+  //int number = (player.returnQuady() * 10) + player.returnQuadx();
+
   commands();
+  
 }
 
 void test() {
@@ -662,7 +669,6 @@ void test() {
 }
 
 string longView(int x,int y) {
-
 
   int count = 0;
   list<Star>::iterator ptr;
@@ -718,6 +724,10 @@ void pulseAttk() {
       cout <<"ENTER ENERGY TO BE USED: ";
       scanf("%d",&inpt);
       p = player.getPulse();
+      while(p > inpt) {
+        srand(time(0));
+        p = rand() % (inpt + 1 - 0) + 0;
+      }
       player.setEnergy(player.getEnergy() - inpt);
       enemy = ptr_1->getPulse();
       player.setArmor(player.getArmor() - enemy);
@@ -764,9 +774,10 @@ void libraryComputer() {
     scanf("%d",&inpt);   
   }
   switch(inpt) {
+
     //Cumulative Record
     case 0:
-    
+    cout<<"COMPUTER RECORD OF GALAXY FOR QUADRANT "<<player.returnQuadx()<<","<<player.returnQuady()<<endl;
     break;
     //Status Report
     case 1:
