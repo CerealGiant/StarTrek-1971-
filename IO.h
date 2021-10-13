@@ -27,5 +27,5 @@ void pulseAttk();
 void photonAttk();
 void libraryComputer();
 string longView(int x, int y);
-extern string ss[10][24];
+extern string ss[10][26];
 #endif

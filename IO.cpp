@@ -1,4 +1,5 @@
 #include "IO.h"
+#include "InputErrorCheck.h"
 //Global
 #define EAST 1
 #define NORTH_EAST 2
@@ -15,25 +16,46 @@ Enterprise player;
 list<kilgon> kilgons;
 list<Star> stars;
 list<starbase> starbases;
-//map<int ,string>Records;
+map<int ,string>Record;
+string Rds[8][8] = {
+  {"\0","\0","\0","\0","\0","\0","\0","\0"},
+  {"\0","\0","\0","\0","\0","\0","\0","\0"},
+  {"\0","\0","\0","\0","\0","\0","\0","\0"},
+  {"\0","\0","\0","\0","\0","\0","\0","\0"},
+  {"\0","\0","\0","\0","\0","\0","\0","\0"},
+  {"\0","\0","\0","\0","\0","\0","\0","\0"},
+  {"\0","\0","\0","\0","\0","\0","\0","\0"},
+  {"\0","\0","\0","\0","\0","\0","\0","\0"}
+};
+string Records[10][17] = {
+  {"-------------------------------------------------"},
+  {"|", "000", "|", "000", "|", "000", "|", "000", "|", "000", "|", "000", "|", "000" ,"|" ,"000" ,"|"},
+  {"|", "000", "|", "000", "|", "000", "|", "000", "|", "000", "|", "000", "|", "000" ,"|" ,"000" ,"|"},
+  {"|", "000", "|", "000", "|", "000", "|", "000", "|", "000", "|", "000", "|", "000" ,"|", "000" ,"|"},
+  {"|", "000", "|", "000", "|", "000", "|", "000", "|", "000", "|", "000", "|", "000" ,"|", "000" ,"|"},
+  {"|", "000", "|", "000", "|", "000", "|", "000", "|", "000", "|", "000", "|", "000" ,"|" ,"000" ,"|"},
+  {"|", "000", "|", "000", "|", "000", "|", "000", "|", "000", "|", "000", "|", "000" ,"|" ,"000" ,"|"},
+  {"|", "000", "|", "000", "|", "000", "|", "000", "|", "000", "|", "000", "|", "000" ,"|" ,"000" ,"|"},
+  {"|", "000", "|", "000", "|", "000", "|", "000", "|", "000", "|", "000", "|", "000" ,"|", "000" ,"|"},
+  {"-------------------------------------------------"}            
+};
 
-
-extern string ss[10][24] = {
+string ss[10][26] = {
     {" - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "},
     {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "},
-    {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "},
-    {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "},
-    {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "},
-    {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "},
-    {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "},
-    {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "},
-    {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "},
+    {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - ","STARDATE ","FILLER"},
+    {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - ","CONDITION ","FILLER"},
+    {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - ","QUADRANT ","FILLER"},
+    {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - ","SECTOR ","FILLER"},
+    {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - ","ENERGY ","FILLER"},
+    {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - ","SHIELDS ","FILLER"},
+    {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - ","PHOTONS ","FILLER"},
     {" - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "},
 };
 
 //Starting Screen(ASCII Art & Options)
 void start() {
-  char* inpt = new char[sizeof(char)*100],*ptr,*st = new char[500];
+  char *st = new char[500];
 
   //Opening trek.txt & Printing the ASCII Art
   FILE *fp;
@@ -46,33 +68,19 @@ void start() {
     cout << st;
   } 
   fclose(fp);
-  
+  cout<<"\n";
   //Error Checking Loop
-  while(true) {
-
-  cout << "\n\nPRESS 1 FOR TUTORIAL. PRESS 2 TO BEGIN:";
-  fgets(inpt,sizeof(inpt),stdin);
-  int number = strtol(inpt,&ptr,10);
-  int count = 0 ;
-  for(long unsigned int i =0; i < sizeof(ptr);i++) {
-    if(ptr[i] >= 33) {
-      count++;
-    }
-  }
-  if(number == 1 && count == 0) {
+  switch(inputCheck("PRESS 1 FOR INSTRUCTIONS. PRESS 2 TO BEGIN:",1,2)) {
+    case 1:
     instructions();
     break;
-  }else if(number == 2 && count == 0) {
+    case 2:
+    cout<<"\t\t\t\tSTAR TREK"<<endl;
     init();
+    cout<<"THERE ARE "<<kilgons.size()<<" KILGONS TO DESTROY"<<" IN "<<player.getDuration()<<" STARDATES."<<"THERE ARE "<<starbases.size() <<" STARBASES.\n"<<endl;
     shortRangeScan();
     break;
-  }else {
-    count = 0;
-    continue;
   }
-
-}
-
 }
 
 //Displays the game instructions in order.
@@ -110,7 +118,15 @@ void instructions() {
 
 //Initalising the Enterprise,Kilgons,Stars and Starbases
 void init() {
-
+  srand(time(0));
+  int d = rand() % (30 + 1 - 12) + 12;
+    player.setDuration(d); 
+    for(int i =1;i < 9;i++) {
+      for(int j = 1;j<9;j++) {
+        int number = (i*10) + j;
+        Record[number] = "NAN";
+      }
+    }
   //Creating & Initating the list of kilgons
   srand(time(NULL));
   int k = 1;
@@ -193,10 +209,13 @@ void shortRangeScan() {
       if(player.getCondition() != "DOCKED") {//If player is docked in the Starbase)
       player.setCondition("RED");
       player.setTempCond("RED");
-      }      
+      }
+      cout<<"\n(!)KILGON PRESENT IN THIS AREA"<<endl;      
     }
   }
-
+  if(player.getArmor() < 100 ) {
+    cout<<"\t(!)SHIELD LEVELS DANGEROUSLY LOW"<<endl;
+  }
   //Loading the Starbases in the quadrant.
   list<starbase>::iterator ptr_2;
   for(ptr_2 = starbases.begin();ptr_2 != starbases.end();ptr_2++) {
@@ -214,41 +233,33 @@ void shortRangeScan() {
   }
 
   
-
-
-  //Updating the board with the latest current pos values obtained from .LoadPos()
+  string Quadrant = to_string(player.returnQuadx() ) + "," + to_string(player.returnQuady() );
+  string Sector = to_string(player.returnSecx()) + "," + to_string( player.returnSecy() );
+  ss[2][25] = to_string(player.getStarDate() );
+  ss[3][25] = player.getCondition();
+  ss[4][25] = Quadrant;
+  ss[5][25] = Sector;
+  ss[6][25] = to_string(player.getEnergy() );
+  ss[7][25] = to_string(player.getArmor() );
+  ss[8][25] = to_string(player.getPhotonCount() );
+  
+  
+  //Updating the board with the latest current pos values obtained from .LoadPos() & other important values
   for(int i =0; i < 10;i++) {
-    for(int j =0; j < 24;j++) {
+    for(int j =0; j < 26;j++) {
       cout << ss[i][j];
     }
     cout << "\n";
   }
 
-  cout << "\n\n---------STATS----------"<<endl;
-  cout << "STARDATE" <<endl;
-  cout << "CONDITION\t" << player.getCondition() <<endl;
-  cout << "QUADRANT \t(" << player.returnQuadx() <<","<< player.returnQuady() <<")"<<endl;
-  cout << "SECTOR   \t(" << player.returnSecx() <<","<< player.returnSecy() <<")"<<endl;
-  cout << "ENERGY   \t"<<player.getEnergy() <<endl;
-  cout << "SHIELDS  \t"<<player.getArmor() <<endl;
-  cout << "PHOTONS  \t" <<player.getPhotonCount() << endl;
-  cout << "---------STATS END---------"<<endl;
 commands();
   
 }
 
 //To handle and display the commands user can input & inputs
 void commands() {
-  int input;
-  cout << "COMMAND: ";
-  //The commands range from 0-9.
-  scanf("%d",&input);
-  while(input < 0 || input > 7 ) {
-    cout <<"0 = SET COURSE\n1 = SHORT RANGE SENSOR SCAN\n2 = LONG RANGE SENSOR SCAN\n3 = FIRE PHASERS\n4 = FIRE PHOTON TORPEDOES\n5 = SHIELD CONTROL\n6 = DAMAGE CONTROL REPORT\n7 = CALL ON LIBRARY COMPUTER\n\n"<<endl;
-    cout << "COMMAND: ";
-    scanf("%d",&input);
-  }
-  switch(input) {
+
+  switch(inputCheck("COMMAND: ",0,7) ) {
     case 0:
     movement();
     break;
@@ -279,12 +290,12 @@ void movement() {
   float warp_factor;
   
   //Course input
-  cout << "Course[1-9]: ";
-  scanf("%d",&course);
+  course = inputCheck("COURSE(1-8): ",1,8);
+
 
   //Warp Factor input
-  cout << "Warp Factor[0-8]: ";
-  scanf("%f",&warp_factor);
+  warp_factor = inputCheck_F("WARP FACTOR(0-8): ",0,8);
+
 
     //move = number of 1/8th part of quadrants moved.
     int move = warp_factor / 0.125;
@@ -299,10 +310,10 @@ void movement() {
           value = value - 8;
           count++;
         }
-        // if(value == 0){
-        //   value = 8;
-        //   count-=1;
-        // }
+         if(value == 0){
+           value = 8;
+           count-=1;
+       }
         if( (player.returnQuadx() + (1*count)) > 8 ) {
           cout << "X: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
           player.setQuadx(player.returnQuadx() );
@@ -310,6 +321,7 @@ void movement() {
         }else {
         player.setQuadx(player.returnQuadx() + (1*count) );
         player.setSecx(value);
+        player.setStarDate(player.getStarDate() + 1);
         }
 
       }else {
@@ -327,10 +339,10 @@ void movement() {
           value = value - 8;
           count++;
         }
-        // if(value == 0) {
-        //   value = 8;
-        //   count-=1;
-        // }
+         if(value == 0) {
+           value = 8;
+           count-=1;
+         }
         if( (player.returnQuadx() + (1*count)) > 8 ) {
           cout << "X: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
           player.setQuadx(player.returnQuadx() );
@@ -338,6 +350,7 @@ void movement() {
         }else {
         player.setQuadx(player.returnQuadx() + (1*count) );
         player.setSecx(value);
+        player.setStarDate(player.getStarDate() + 1);
         }
       }else {
       player.setSecx( player.returnSecx() + (1*move) );
@@ -350,10 +363,7 @@ void movement() {
           value = value + 8;
           count++;
         }
-        // if(value == 8) {
-        //   value = 1;
-        //   count+=1;
-        // }
+
         if(player.returnQuady() - (1*count) < 1) {
           cout << "Y: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
          player.setSecy(player.returnSecy() );
@@ -361,7 +371,7 @@ void movement() {
         }else {
         player.setQuady(player.returnQuady() - (1*count) );
         player.setSecy(value);
-
+        player.setStarDate(player.getStarDate() + 1);
         }
 
       }else {
@@ -379,10 +389,7 @@ void movement() {
           value = value + 8;
           count++;
         }
-        // if(value == 8) {
-        //   value = 1;
-        //   count+=1;
-        // }
+
         if(player.returnQuady() - (1*count) < 1 ) {
          cout << "Y: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
          player.setSecy(player.returnSecy() );
@@ -390,6 +397,7 @@ void movement() {
         }else {
         player.setQuady(player.returnQuady() - (1*count) );
         player.setSecy(value);
+        player.setStarDate(player.getStarDate() + 1);
         }
 
       }else {
@@ -408,10 +416,7 @@ void movement() {
           value = value + 8;
           count++;
         }
-        // if(value == 8) {
-        //   value = 1;
-        //   count+=1;
-        // }
+
         if((player.returnQuadx() - (1*count) ) < 1 ) {
           cout << "X: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
           player.setSecx(player.returnSecx() );
@@ -419,6 +424,7 @@ void movement() {
         }else {
         player.setQuadx(player.returnQuadx() - (1*count) );
         player.setSecx(value);
+        player.setStarDate(player.getStarDate() + 1);
         }
       }else {
       player.setSecx(player.returnSecx() - (1*move) );
@@ -431,10 +437,7 @@ void movement() {
           value = value + 8;
           count++;
         }
-        // if(value == 8) {
-        //   value = 1;
-        //   count+=1;
-        // }
+
         if((player.returnQuady() - (1*count)) < 1 ) {
           cout << "Y: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
           player.setSecy(player.returnSecy() );
@@ -442,6 +445,7 @@ void movement() {
         }else {
           player.setQuady(player.returnQuady() - (1*count) );
           player.setSecy(value);
+          player.setStarDate(player.getStarDate() + 1);
         }
       }else {
       player.setSecy(player.returnSecy() - (1*move) );
@@ -458,10 +462,7 @@ void movement() {
           value = value + 8;
           count++;
         }
-        // if(value == 8) {
-        //   value = 1;
-        //   count+=1;
-        // }
+  
         if( (player.returnQuadx() - (1*count)) < 1) {
           cout << "X: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
           player.setQuadx(player.returnQuadx() );
@@ -469,6 +470,7 @@ void movement() {
         }else {
           player.setQuadx(player.returnQuadx() - (1*count));
           player.setSecx(value);
+          player.setStarDate(player.getStarDate() + 1);
         }
       }else {
       player.setSecx(player.returnSecx() - (1*move) );
@@ -485,10 +487,7 @@ void movement() {
           value = value + 8;
           count++;
         }
-        // if(value == 8) {
-        //   value = 1;
-        //   count+=1;
-        // }
+
         if(player.returnQuadx() - (1*count) < 1) {
           cout << "X: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
           player.setQuadx(player.returnQuadx() );
@@ -496,6 +495,7 @@ void movement() {
         }else {
           player.setQuadx(player.returnQuadx() - (1*count) );
           player.setSecx(value);
+          player.setStarDate(player.getStarDate() + 1);
         }
       }else {
       player.setSecx(player.returnSecx() - (1*move) );
@@ -507,10 +507,10 @@ void movement() {
           value = value - 8;
           count++;
         }
-        // if(value == 0) {
-        //   value = 8;
-        //   count-=1;
-        // }
+         if(value == 0) {
+           value = 8;
+           count-=1;
+         }
         if(player.returnQuady() + (1*count) > 8) {
           cout <<"Y: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
           player.setSecy(player.returnSecy() );
@@ -518,6 +518,7 @@ void movement() {
         }else {
           player.setQuady(player.returnQuady() + (1*count) );
           player.setSecy(value);
+          player.setStarDate(player.getStarDate() + 1);
         }
       }else {
       player.setSecy(player.returnSecy() + (1*move) );
@@ -534,10 +535,10 @@ void movement() {
           value = value - 8;
           count++;
         }
-        // if(value == 0) {
-        //   value = 8;
-        //   count-=1;
-        // }
+         if(value == 0) {
+           value = 8;
+           count-=1;
+         }
         if(player.returnQuady() + (1*count) > 8) {
           cout <<"Y: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
           player.setSecy(player.returnSecy() );
@@ -545,6 +546,7 @@ void movement() {
         }else {
           player.setSecy(value);
           player.setQuady(player.returnQuady() + (1*count) );
+          player.setStarDate(player.getStarDate() + 1);
         }
       }else {
       player.setSecy(player.returnSecy() + (1*move) );
@@ -561,10 +563,10 @@ void movement() {
           value = value - 8;
           count++;
         }
-        // if(value == 0) {
-        //     value = 8;
-        //     count-=1;
-        //   }
+         if(value == 0) {
+             value = 8;
+             count-=1;
+           }
         if(player.returnQuadx() + (1*count) > 8) {
           cout << "X: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
           player.setSecx(player.returnSecx() );
@@ -572,6 +574,7 @@ void movement() {
         }else {
           player.setSecx(value);
           player.setQuadx(player.returnQuadx() + (1*count) );
+          player.setStarDate(player.getStarDate() + 1);
         }
       }else {
       player.setSecx(player.returnSecx() + (1*move) );
@@ -583,10 +586,10 @@ void movement() {
           value = value - 8;
           count++;
         }
-        // if(value == 0) {
-        //     value = 8;
-        //     count-=1;
-        //   }
+         if(value == 0) {
+             value = 8;
+             count-=1;
+           }
         if(player.returnQuady() + (1*count) > 8 ) {
           cout<<"Y: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
           player.setSecy(player.returnSecy() );
@@ -594,6 +597,7 @@ void movement() {
         }else {
           player.setQuady(player.returnQuady() + (1*count) );
           player.setSecy(value);
+          player.setStarDate(player.getStarDate() + 1);
         }
       }else {
       player.setSecy(player.returnSecy() + (1*move) );
@@ -628,28 +632,34 @@ void movement() {
       // }
 
       // } 
+      if(player.getStarDate() - player.getIStarDate() == player.getDuration() ) {
+        cout<<"IT IS NOW "<<player.getStarDate()<<". THERE ARE "<<kilgons.size() <<" LEFT."<<endl;
+        cout<<"\t\tENTERPRISE WAS UNSUCCESSFUL IN DESTROYING ALL KILGONS IN THE GALAXY.GAME OVER"<<endl;
+        exit(1);
+      }
+      list<Star>::iterator ptr;
+      for(ptr = stars.begin();ptr != stars.end();ptr++) {
+        if( (ptr->returnQuadx() == player.returnQuadx() ) && ptr->returnQuady() == player.returnQuady()  ) {
+          //Same Quadrant as player
+        if( (ptr->returnSecx() == player.returnSecx() ) && ptr->returnSecy() == player.returnSecy()  ) {
+          //Same Sector
+          cout << "YOU CANT NAVIGATE INTO A STAR SILLY...."<<endl;
+          player.setSecx(player.returnSecx() );
+          player.setSecy(player.returnSecy() );
+          //Damage         
+        }  
+        }
+      }            
+
+
 commands();
 
 }
 //To set shield strength.
 void shieldset() {
-  int shield_temp = player.getArmor();
-  int shield;
-  while(true) {
-  cout << "SET ENERGY GOING TO SHIELD: ";
-  scanf("%d",&shield);
-  if(shield > player.getEnergy() ) {
-    cout<<"NOT POSSIBLE.(ENERGY TOO LOW)"<<endl;
-    continue;
-  }else if(player.getArmor() >= shield) {
-    cout<<"SET ENERGY HIGHER THAN PREVIOUS ONE."<<endl;
-    continue;
-  }else {
-    break;
-  }
-  }
+  int shield = inputCheck("SET ENERGY GOING TO SHIELD: ",player.getArmor() ,player.getEnergy() );
   player.setArmor(shield);
-  player.setEnergy(player.getEnergy() - (shield-shield_temp) );
+  player.setEnergy(3000 - shield);
   commands();
 }
 
@@ -669,7 +679,12 @@ void longScan() {
     }
     cout << "\n";
   }
- 
+  for(int i = -1; i < 2;i++) {
+    for(int j = -1; j < 2;j++) {
+      int number = ((player.returnQuadx() + i) * 10) + (player.returnQuady() + j);
+      Record[number] = longView(i,j); 
+    }
+  }
 
   commands();
   
@@ -727,14 +742,13 @@ string longView(int x,int y) {
 }
 
 void pulseAttk() {
-  int inpt,enemy,p;
+  int enemy,p;
   list<kilgon>::iterator ptr_1;
   for(ptr_1 = kilgons.begin();ptr_1 != kilgons.end();ptr_1++) {
     if( (ptr_1->returnQuadx() == player.returnQuadx() ) && ptr_1->returnQuady() == player.returnQuady() ) {
       while(player.getArmor() >= 0 && ptr_1->getArmor() > 0 ) {
-      cout << "TARGET ACQUIRED! ATTACKING...."<<endl;
-      cout <<"ENTER ENERGY TO BE USED: ";
-      scanf("%d",&inpt);
+      cout<<"TARGET ACQUIRED! ATTACKING....\n";
+      int inpt = inputCheck("ENTER ENERGY TO BE USED: ",0,player.getEnergy() );
       p = player.getPulse();
       while(p > inpt) {
         srand(time(0));
@@ -774,28 +788,39 @@ void pulseAttk() {
 }
 
 void libraryComputer() {
-  cout<<"OPTION: ";
-  int inpt;
-  scanf("%d",&inpt);
-  while(inpt < 0 || inpt > 2) {
-    cout <<"THE LIBRARY COMPUTER CONTAINS 3 OPTIONS:\n\n"<<endl;
-    cout<<"OPTION 0 = CUMULATIVE GALACTIC RECORD"<<endl;
-    cout<<"OPTION 1 = STATUS REPORT"<<endl;
-    cout<<"OPTION 2 = PHOTON TORPEDO TRAJECTORY DATA"<<endl;
-    cout<<"OPTION: ";
-    scanf("%d",&inpt);   
-  }
-  switch(inpt) {
 
+  int count = 11,temp_count = 11;
+  switch(inputCheck("OPTION: ",0,2) ) {
+    
     //Cumulative Record
     case 0:
+    //Load the values into the map
+    for(int i = 1;i < 9;i++) {
+      for(int j = 1; j < 17;j+=2) {
+        Records[i][j] = Record[count];
+        if(count < 80) {
+          count+=10;
+        }else {
+          count = temp_count + 1;
+          temp_count = count;
+        }
+      }
+    }
+    //Records[1][14] = "DOG";
     cout<<"COMPUTER RECORD OF GALAXY FOR QUADRANT "<<player.returnQuadx()<<","<<player.returnQuady()<<endl;
+    for(int i =0; i < 10;i++) {
+      for(int j =0; j < 17;j++) {
+        cout<<Records[i][j];
+      }
+      cout<<"\n";
+    }
+    commands();
     break;
     //Status Report
     case 1:
     cout<<"*********STATUS REPORT*********"<<endl;
     cout<<"NUMBER OF KILGONS LEFT: "<<kilgons.size()<<endl;
-    cout<<"STARDATES:"<<endl;
+    cout<<"STARDATES LEFT:"<<player.getDuration() - (player.getStarDate() - player.getIStarDate() ) <<endl;
     cout<<"NUMBER OF STARBASES: "<<starbases.size()<<endl;
     cout<<"*******************************"<<endl;
     commands();
@@ -804,7 +829,7 @@ void libraryComputer() {
     //Calculator + Trajectory detector.
     case 2:
     list<kilgon>::iterator ptr_1;
-    int x_diff,y_diff,input;
+    int x_diff,y_diff;
     for(ptr_1 = kilgons.begin();ptr_1 != kilgons.end();ptr_1++){
       if( (ptr_1->returnQuadx() == player.returnQuadx() ) && ptr_1->returnQuady() == player.returnQuady() ){
         //Kilgon present in current quadrant 
@@ -833,24 +858,21 @@ void libraryComputer() {
         }
     }
   }
-  cout <<"TO USE CALCULATOR PRESS 1 or 0 to exit: ";
-  scanf("%d",&input);
-  while(input < 0 || input > 1) {
-    cout <<"TO USE CALCULATOR PRESS 1 or 0 to exit: ";
-    scanf("%d",&input);  
-  }
-  switch(input) {
+  
+
+  switch(inputCheck("TO USE CALCULATOR PRESS 1 or 0 to exit: ",0,1) ) {
     case 0:
     commands();
     break;
+
     case 1:
     //Calculator
     int x1,y1,x2,y2,diff_x,diff_y;
     float dist;
-    cout <<"INPUT THE COORDINATES OF ENTERPRISE: ";
-    scanf("%d %d",&x1,&y1);
-    cout <<"INPUT THE COORDINATES OF ENEMY SHIP: ";
-    scanf("%d %d",&x2,&y2);
+    x2 = inputCheck("INPUT THE X COORDINATE OF ENTERPRISE: ",1,8); 
+    y2 = inputCheck("INPUT THE Y COORDINATE OF ENTERPRISE: ",1,8);
+    x1 = inputCheck("INPUT THE X COORDINATE OF KILGON: ",1,8);
+    y1 = inputCheck("INPUT THE Y COORDINATE OF KILGON: ",1,8);
     diff_x = x2 - x1;
     diff_y = y2 - y1;
     dist = sqrt( (diff_x*diff_x) + (diff_y*diff_y) );
@@ -864,8 +886,12 @@ void libraryComputer() {
 
 void photonAttk() {
   int traj,photonx = player.returnSecx(),photony = player.returnSecy();
-  cout << "COMPUTER INITIALISED. ENTER TRAJECTORY[1-8]: ";
-  scanf("%d",&traj);
+  if(player.getPhotonCount() == 0) {
+    cout<<"NO MORE PHOTONS LEFT!!"<<endl;
+    commands();
+  }
+  traj = inputCheck("COMPUTER INITIALISED. ENTER TRAJECTORY[1-8]: ",1,8);
+
   list<kilgon>::iterator ptr_1;
   for(ptr_1 = kilgons.begin();ptr_1 != kilgons.end();ptr_1++) {
   if( (ptr_1->returnQuadx() == player.returnQuadx() ) && ptr_1->returnQuady() == player.returnQuady() ) {
@@ -884,8 +910,6 @@ void photonAttk() {
         ptr_1->tempPos(ptr_1->returnSecx(),ptr_1->returnSecy() );          
         kilgons.erase(ptr_1);  
         cout <<"KILGON SUCCESSFULLY HIT!"<<endl;
-        }else {
-          cout<<"NO MORE PHOTONS. ATTACK FAILED!"<<endl;
         }
 
       }else {
@@ -910,9 +934,8 @@ void photonAttk() {
         ptr_1->tempPos(ptr_1->returnSecx(),ptr_1->returnSecy() );          
         kilgons.erase(ptr_1);  
         cout <<"KILGON SUCCESSFULLY HIT!"<<endl;
-        }else {
-          cout<<"NO MORE PHOTONS. ATTACK FAILED!"<<endl;
         }
+
       }else {
         cout << "MISSED KILGON!!"<<endl;
         player.setPhotonCount(player.getPhotonCount() - 1);        
@@ -930,9 +953,8 @@ void photonAttk() {
         ptr_1->tempPos(ptr_1->returnSecx(),ptr_1->returnSecy() );          
         kilgons.erase(ptr_1);  
         cout <<"KILGON SUCCESSFULLY HIT!"<<endl;
-        }else {
-          cout<<"NO MORE PHOTONS. ATTACK FAILED!"<<endl;
         }
+
       }else {
         cout << "MISSED KILGON!!"<<endl;
         player.setPhotonCount(player.getPhotonCount() - 1);        
@@ -955,9 +977,8 @@ void photonAttk() {
         ptr_1->tempPos(ptr_1->returnSecx(),ptr_1->returnSecy() );          
         kilgons.erase(ptr_1);  
         cout <<"KILGON SUCCESSFULLY HIT!"<<endl;
-        }else {
-          cout<<"NO MORE PHOTONS. ATTACK FAILED!"<<endl;
         }
+
       }else {
         cout << "MISSED KILGON!!"<<endl;
         player.setPhotonCount(player.getPhotonCount() - 1);        
@@ -976,9 +997,8 @@ void photonAttk() {
         ptr_1->tempPos(ptr_1->returnSecx(),ptr_1->returnSecy() );          
         kilgons.erase(ptr_1);  
         cout <<"KILGON SUCCESSFULLY HIT!"<<endl;
-        }else {
-          cout<<"NO MORE PHOTONS. ATTACK FAILED!"<<endl;
         }
+
       }else {
         cout << "MISSED KILGON!!"<<endl;
         player.setPhotonCount(player.getPhotonCount() - 1);        
@@ -1001,9 +1021,8 @@ void photonAttk() {
         ptr_1->tempPos(ptr_1->returnSecx(),ptr_1->returnSecy() );          
         kilgons.erase(ptr_1);  
         cout <<"KILGON SUCCESSFULLY HIT!"<<endl;
-        }else {
-          cout<<"NO MORE PHOTONS. ATTACK FAILED!"<<endl;
         }
+
       }else {
         cout << "MISSED KILGON!!"<<endl;
         player.setPhotonCount(player.getPhotonCount() - 1);        
@@ -1022,9 +1041,8 @@ void photonAttk() {
         ptr_1->tempPos(ptr_1->returnSecx(),ptr_1->returnSecy() );          
         kilgons.erase(ptr_1);  
         cout <<"KILGON SUCCESSFULLY HIT!"<<endl;
-        }else {
-          cout<<"NO MORE PHOTONS. ATTACK FAILED!"<<endl;
         }
+
       }else {
         cout << "MISSED KILGON!!"<<endl;
         player.setPhotonCount(player.getPhotonCount() - 1);        
@@ -1047,9 +1065,8 @@ void photonAttk() {
         ptr_1->tempPos(ptr_1->returnSecx(),ptr_1->returnSecy() );          
         kilgons.erase(ptr_1);  
         cout <<"KILGON SUCCESSFULLY HIT!"<<endl;
-        }else {
-          cout<<"NO MORE PHOTONS. ATTACK FAILED!"<<endl;
         }
+
       }else {
         cout << "MISSED KILGON!!"<<endl;
         player.setPhotonCount(player.getPhotonCount() - 1);        
@@ -1057,7 +1074,7 @@ void photonAttk() {
       break;                                                                   
     }
     if(kilgons.size() == 0) {
-      cout<<"ALL THE KILGONS HAVE BEEN DESTROYED!! GAME OVER"<<endl;
+      cout<<"ALL THE KILGONS HAVE BEEN DESTROYED!! GAME OVER "<<".THE STARDATE NOW IS "<<player.getStarDate()<<".AND YOU WON IN "<<player.getStarDate()-player.getIStarDate()<<" STARDATES."<<endl;
       exit(1);
     }else {
     commands();
@@ -1070,9 +1087,6 @@ void photonAttk() {
   cout<<"NO KILGON DETECTED! PHOTON WASTED!"<<endl;
   player.setPhotonCount(player.getPhotonCount() - 1);
   commands();
-  }else {
-    cout<<"NO PHOTONS & NO KILGON DETECTED!"<<endl;
-    commands();
   }
 
 

@@ -8,7 +8,7 @@
 //Enterprise is <*>(The Player)
 class Enterprise: public SpaceObjects{
     protected:
-    int m_photoncount,m_photonpower,m_energy,m_pulseattack;
+    int m_photoncount,m_photonpower,m_energy,m_pulseattack,m_initialstardate,m_duration,m_stardate;
     string m_condition,m_tempcondition;
 
     public:
@@ -67,6 +67,22 @@ class Enterprise: public SpaceObjects{
     }
     string getTempCond() {
         return m_tempcondition;
+    }
+
+     int getStarDate() {
+         return m_stardate;
+     }
+     void setStarDate(int s) {
+         m_stardate = s;
+    }
+    void setDuration(int d) {
+        m_duration = d;
+    }
+    int getDuration() {
+        return m_duration;
+    }
+    int getIStarDate() {
+        return m_initialstardate;
     }
 };
 #endif

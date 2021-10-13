@@ -7,10 +7,13 @@
     m_condition = "GREEN";
     m_tempcondition = "GREEN";
     m_energy = 3000;
+
     srand(time(NULL));
     //Randomly generating INITIAL quad postions(x and y for the quad)
     int x = rand() % ( 8 + 1 - 1) + 1, y = rand() % ( 8 + 1 - 1) + 1;
     m_quadx = x,m_quady = y;
+    m_stardate = rand() % (4000 + 1 - 2000) + 2000;
+    m_initialstardate = m_stardate;
 
     //Randomly generating INITAL sector positions(c for column and r for row)
     int c = rand() % ( 8 + 1 - 1) + 1, r = rand() % ( 8 + 1 - 1) + 1;
