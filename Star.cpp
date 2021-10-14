@@ -19,7 +19,7 @@ void Star:: LoadPos() {
   //Loading Position
   int editedx = 1 + ( (m_secx -1) * 3 );
   int editedy = m_secy;
-  while(ss[editedy][editedx] != " - "&& ss[editedy][editedx] != " * ") {
+  while(ss[editedy][editedx] != "\0"&& ss[editedy][editedx] != " * ") {
     srand(time(0));
     m_secx = rand() % (8 + 1 - 1) + 1;
     m_secy = rand() % (8 + 1 - 1) + 1;
@@ -34,6 +34,6 @@ void Star:: LoadPos() {
 void Star:: tempPos(int x, int y) {
   int editedx = 1 + ( (x -1) * 3 );
   int editedy = y;  
-  ss[editedy][editedx] = " - ";
+  ss[editedy][editedx] = "\0";
 
 } 
