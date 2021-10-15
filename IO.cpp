@@ -75,7 +75,7 @@ void start() {
     instructions();
     break;
     case 2:
-    cout<<"\t\t\t\tSTAR TREK"<<endl;
+    cout<<"\n\t\t\t\tSTAR TREK\n"<<endl;
     init();
     cout<<"THERE ARE "<<kilgons.size()<<" KILGONS TO DESTROY"<<" IN "<<player.getDuration()<<" STARDATES."<<"THERE ARE "<<starbases.size() <<" STARBASES.\n"<<endl;
     shortRangeScan();
@@ -136,11 +136,11 @@ void init() {
     kilgons.push_back(*a);
   }
   //TESTING: shows the positions(quadrant) as output to check against.
-      list<kilgon>::iterator ptr_3;
-      for(ptr_3 = kilgons.begin();ptr_3 != kilgons.end();ptr_3++) {
-          cout << "KILGONS' X POS: " << ptr_3->returnQuadx() << endl;
-          cout << "KILGONS' Y POS: " << ptr_3->returnQuady() << endl;
-      }
+      // list<kilgon>::iterator ptr_3;
+      // for(ptr_3 = kilgons.begin();ptr_3 != kilgons.end();ptr_3++) {
+      //     cout << "KILGONS' X POS: " << ptr_3->returnQuadx() << endl;
+      //     cout << "KILGONS' Y POS: " << ptr_3->returnQuady() << endl;
+      // }
 
   //Creating & Initating the list of starbases(>!<)
 
@@ -152,28 +152,28 @@ void init() {
     starbases.push_back(*a);
   }
     //TESTING: shows the positions(quadrant) as output to check against.
-      list<starbase>::iterator ptr_1;
-      for(ptr_1 = starbases.begin();ptr_1 != starbases.end();ptr_1++) {
-          cout << "STARBASES' X POS: " << ptr_1->returnQuadx() << endl;
-          cout << "STARBASES' Y POS: " << ptr_1->returnQuady() << endl;
-      }
+      // list<starbase>::iterator ptr_1;
+      // for(ptr_1 = starbases.begin();ptr_1 != starbases.end();ptr_1++) {
+      //     cout << "STARBASES' X POS: " << ptr_1->returnQuadx() << endl;
+      //     cout << "STARBASES' Y POS: " << ptr_1->returnQuady() << endl;
+      // }
 
   //Creating & Initating the list of stars(*)
 
   srand(time(NULL));
-  int st = rand() %  (250 + 1 - 150) + 150;
+  int st = rand() %  (150 + 1 - 80) + 80;
   srand(time(NULL));
   for(int i = 0; i < st;i++) {
     Star *a = new Star;
     stars.push_back(*a);
   }
     //TESTING: shows the positions(quadrant) as output to check against.
-      list<Star>::iterator ptr;
-      for(ptr = stars.begin();ptr != stars.end();ptr++) {
-          cout << "STAR'S X POS: " << ptr->returnQuadx() << endl;
-          cout << "STAR'S Y POS: " << ptr->returnQuady() << endl;
-          cout<<"STAR'S COUNT: "<<stars.size() <<endl;
-      }
+      // list<Star>::iterator ptr;
+      // for(ptr = stars.begin();ptr != stars.end();ptr++) {
+      //     cout << "STAR'S X POS: " << ptr->returnQuadx() << endl;
+      //     cout << "STAR'S Y POS: " << ptr->returnQuady() << endl;
+      //     cout<<"STAR'S COUNT: "<<stars.size() <<endl;
+      // }
 
 }
 
@@ -685,19 +685,7 @@ void movement() {
           cout<<"\t\tENTERPRISE WAS UNSUCCESSFUL IN DESTROYING ALL KILGONS IN THE GALAXY.GAME OVER"<<endl;
           exit(1);
         }
-        list<Star>::iterator ptr;
-        for(ptr = stars.begin();ptr != stars.end();ptr++) {
-          if( (ptr->returnQuadx() == player.returnQuadx() ) && ptr->returnQuady() == player.returnQuady()  ) {
-            //Same Quadrant as player
-          if( (ptr->returnSecx() == player.returnSecx() ) && ptr->returnSecy() == player.returnSecy()  ) {
-            //Same Sector
-            cout << "YOU CANT NAVIGATE INTO A STAR SILLY...."<<endl;
-            player.setSecx(player.returnSecx() );
-            player.setSecy(player.returnSecy() );
-            //Damage         
-          }  
-          }
-        }            
+         
   
   player.damaged();
   
