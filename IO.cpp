@@ -129,7 +129,7 @@ void init() {
     }
   //Creating & Initating the list of kilgons
   srand(time(NULL));
-  int k = 1;
+  int k = rand() % (25 + 1 - 8) + 8;
   srand(time(NULL));
   for(int i = 0; i < k;i++) {
     kilgon *a = new kilgon;
@@ -161,7 +161,7 @@ void init() {
   //Creating & Initating the list of stars(*)
 
   srand(time(NULL));
-  int st = rand() %  (150 + 1 - 80) + 80;
+  int st = rand() %  (200 + 1 - 100) + 100;
   srand(time(NULL));
   for(int i = 0; i < st;i++) {
     Star *a = new Star;
@@ -191,15 +191,14 @@ void shortRangeScan() {
 
   //Loading position of the player.
   player.LoadPos();
-
   //Loading the Stars in the quadrant.
-  list<Star>::iterator ptr;
-  for(ptr = stars.begin();ptr != stars.end();ptr++) {
-    if( (ptr->returnQuadx() == player.returnQuadx() ) && ptr->returnQuady() == player.returnQuady()  ) {
-      //Same Quadrant as player
-      ptr->LoadPos();
-    }
-  }  
+   list<Star>::iterator ptr;
+   for(ptr = stars.begin();ptr != stars.end();ptr++) {
+     if( (ptr->returnQuadx() == player.returnQuadx() ) && ptr->returnQuady() == player.returnQuady()  ) {
+       //Same Quadrant as player
+       ptr->LoadPos();
+     }
+   }  
 
   //Loading the Kilgons in the quadrant.
   list<kilgon>::iterator ptr_1;
@@ -227,6 +226,7 @@ void shortRangeScan() {
         ptr_2->docked();
         player.setArmor(0);
         player.setEnergy(3000);
+        player.setPhotonCount(10);
         continue;
       }
       ptr_2->LoadPos();
@@ -262,23 +262,44 @@ void commands() {
 
   switch(inputCheck("COMMAND: ",0,7) ) {
     case 0:
+    while(player.getWarp() < 0) {
+      cout<<"DAMAGE CONTROL REPORT: WARP ENGINES ARE DOWN!"<<endl;
+    }    
     movement();
     break;
     case 1:
+    while(player.getS() < 0) {
+      cout<<"DAMAGE CONTROL REPORT: S.R SENSORS ARE DOWN!"<<endl;
+    }
     shortRangeScan();
     break;
     case 2:
+    while(player.getL() < 0) {
+      cout<<"DAMAGE CONTROL REPORT: L.R SENSORS ARE DOWN!"<<endl;
+    }    
     longScan();
     break;
     case 3:
+    while(player.getPhaser() < 0) {
+      cout<<"DAMAGE CONTROL REPORT: PHASER CONTROL IS DOWN!"<<endl;
+    }    
     pulseAttk();
     break;
     case 4:
+    while(player.getPhoton() < 0) {
+      cout<<"DAMAGE CONTROL REPORT: PHOTON TUBES ARE DOWN!"<<endl;
+    }    
     photonAttk();
     break;
     case 5:
+    while(player.getShield() < 0) {
+      cout<<"DAMAGE CONTROL REPORT: SHIELD CONTROL IS DOWN!"<<endl;
+    }    
     shieldset();
     case 7:
+    while(player.getComputer() < 0) {
+      cout<<"DAMAGE CONTROL REPORT: COMPUTER IS DOWN!"<<endl;
+    }    
     libraryComputer();
     break;
   }
@@ -287,391 +308,422 @@ void commands() {
 //To control the movement of the player
 void movement() {
 
-  int course;
-  float warp_factor;
-  
-  //Course input
-  course = inputCheck("COURSE(1-8): ",1,8);
-
-
-  //Warp Factor input
-  warp_factor = inputCheck_F("WARP FACTOR(0-8): ",0,8);
-
-
-    //move = number of 1/8th part of quadrants moved.
-    int move = warp_factor / 0.125;
+    int tempsecx = player.returnSecx();
+    int tempsecy = player.returnSecy();  
+    int tempquadx = player.returnQuadx(); 
+    int tempquady = player.returnQuady();    
+    int course;
+    float warp_factor;
     
-    switch(course) {
-      case EAST:
-      player.tempPos(player.returnSecx(),player.returnSecy() );
-      if( (player.returnSecx() + (1*move)) > 8 ) {
-        int value = (player.returnSecx() + (1*move));
-        int count = 0;
-        while(value >= 8) {
-          value = value - 8;
-          count++;
-        }
-         if(value == 0){
-           value = 8;
-           count-=1;
-       }
-        if( (player.returnQuadx() + (1*count)) > 8 ) {
-          cout << "X: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
-          player.setQuadx(player.returnQuadx() );
-          player.setSecx(player.returnSecx() );
-        }else {
-        player.setQuadx(player.returnQuadx() + (1*count) );
-        player.setSecx(value);
-        player.setStarDate(player.getStarDate() + 1);
-        }
-
-      }else {
-      player.setSecx( player.returnSecx() + (1*move) );
-      }
-       
-      break;
-
-      case NORTH_EAST:
-      player.tempPos(player.returnSecx(),player.returnSecy() );
-      if( (player.returnSecx() + (1*move)) > 8 ) {
-        int value = (player.returnSecx() + (1*move));
-        int count = 0;
-        while(value >= 8) {
-          value = value - 8;
-          count++;
-        }
-         if(value == 0) {
-           value = 8;
-           count-=1;
-         }
-        if( (player.returnQuadx() + (1*count)) > 8 ) {
-          cout << "X: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
-          player.setQuadx(player.returnQuadx() );
-          player.setSecx(player.returnSecx() );
-        }else {
-        player.setQuadx(player.returnQuadx() + (1*count) );
-        player.setSecx(value);
-        player.setStarDate(player.getStarDate() + 1);
-        }
-      }else {
-      player.setSecx( player.returnSecx() + (1*move) );
-      }
-
-      if((player.returnSecy() - (1*move) ) < 1 ) {
-        int value = player.returnSecy() - (1*move);
-        int count = 0;
-        while(value <= 0) {
-          value = value + 8;
-          count++;
-        }
-
-        if(player.returnQuady() - (1*count) < 1) {
-          cout << "Y: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
-         player.setSecy(player.returnSecy() );
-         player.setQuady(player.returnQuady() );
-        }else {
-        player.setQuady(player.returnQuady() - (1*count) );
-        player.setSecy(value);
-        player.setStarDate(player.getStarDate() + 1);
-        }
-
-      }else {
-      player.setSecy(player.returnSecy() - (1*move) );
-      }
-
-      break;
-
-      case NORTH:
-      player.tempPos(player.returnSecx(),player.returnSecy() );
-      if((player.returnSecy() - (1*move) ) < 1) {
-        int value = player.returnSecy() - (1*move);
-        int count = 0;
-        while(value <= 0) {
-          value = value + 8;
-          count++;
-        }
-
-        if(player.returnQuady() - (1*count) < 1 ) {
-         cout << "Y: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
-         player.setSecy(player.returnSecy() );
-         player.setQuady(player.returnQuady() );          
-        }else {
-        player.setQuady(player.returnQuady() - (1*count) );
-        player.setSecy(value);
-        player.setStarDate(player.getStarDate() + 1);
-        }
-
-      }else {
-      player.setSecy(player.returnSecy() - (1*move) );
-      }
-
-      break;
-    
-
-      case NORTH_WEST:
-      player.tempPos(player.returnSecx(),player.returnSecy() );
-      if( (player.returnSecx() - (1*move)) < 1 ) {
-        int value = player.returnSecx() - (1*move);
-        int count = 0;
-        while(value <= 0) {
-          value = value + 8;
-          count++;
-        }
-
-        if((player.returnQuadx() - (1*count) ) < 1 ) {
-          cout << "X: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
-          player.setSecx(player.returnSecx() );
-          player.setQuadx(player.returnQuadx() );
-        }else {
-        player.setQuadx(player.returnQuadx() - (1*count) );
-        player.setSecx(value);
-        player.setStarDate(player.getStarDate() + 1);
-        }
-      }else {
-      player.setSecx(player.returnSecx() - (1*move) );
-      }
-
-      if((player.returnSecy() - (1*move)) < 1 ) {
-        int value = player.returnSecy() - (1*move);
-        int count = 0;
-        while(value <= 0 ) {
-          value = value + 8;
-          count++;
-        }
-
-        if((player.returnQuady() - (1*count)) < 1 ) {
-          cout << "Y: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
-          player.setSecy(player.returnSecy() );
-          player.setQuady(player.returnQuady() );
-        }else {
-          player.setQuady(player.returnQuady() - (1*count) );
-          player.setSecy(value);
-          player.setStarDate(player.getStarDate() + 1);
-        }
-      }else {
-      player.setSecy(player.returnSecy() - (1*move) );
-      }
-
-      break;
-
-      case WEST:
-      player.tempPos(player.returnSecx(),player.returnSecy() );
-      if((player.returnSecx() - (1*move)) < 1 ) {
-        int value = player.returnSecx() - (1*move);
-        int count = 0;
-        while(value <= 0) {
-          value = value + 8;
-          count++;
-        }
+    //Course input
+    course = inputCheck("COURSE(1-8): ",1,8);
   
-        if( (player.returnQuadx() - (1*count)) < 1) {
-          cout << "X: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
-          player.setQuadx(player.returnQuadx() );
-          player.setSecx(player.returnSecx() );
-        }else {
-          player.setQuadx(player.returnQuadx() - (1*count));
-          player.setSecx(value);
-          player.setStarDate(player.getStarDate() + 1);
-        }
-      }else {
-      player.setSecx(player.returnSecx() - (1*move) );
-      }
-
-      break;
-
-      case SOUTH_WEST:
-      player.tempPos(player.returnSecx(),player.returnSecy() );
-      if(player.returnSecx() - (1*move) < 1) {
-        int value = player.returnSecx() - (1*move);
-        int count = 0;
-        while(value <= 0) {
-          value = value + 8;
-          count++;
-        }
-
-        if(player.returnQuadx() - (1*count) < 1) {
-          cout << "X: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
-          player.setQuadx(player.returnQuadx() );
-          player.setSecx(player.returnSecx() ); 
-        }else {
-          player.setQuadx(player.returnQuadx() - (1*count) );
-          player.setSecx(value);
-          player.setStarDate(player.getStarDate() + 1);
-        }
-      }else {
-      player.setSecx(player.returnSecx() - (1*move) );
-      }
-      if(player.returnSecy() + (1*move) > 8) {
-        int value = player.returnSecy() + (1*move);
-        int count = 0;
-        while(value >= 8) {
-          value = value - 8;
-          count++;
-        }
-         if(value == 0) {
-           value = 8;
-           count-=1;
-         }
-        if(player.returnQuady() + (1*count) > 8) {
-          cout <<"Y: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
-          player.setSecy(player.returnSecy() );
-          player.setQuady(player.returnQuady() );
-        }else {
-          player.setQuady(player.returnQuady() + (1*count) );
-          player.setSecy(value);
-          player.setStarDate(player.getStarDate() + 1);
-        }
-      }else {
-      player.setSecy(player.returnSecy() + (1*move) );
-      }
-
-      break;
-
-      case SOUTH:
-      player.tempPos(player.returnSecx(),player.returnSecy() );
-      if(player.returnSecy() + (1*move) > 8) {
-        int value = player.returnSecy() + (1*move);
-        int count = 0;
-        while(value >= 8) {
-          value = value - 8;
-          count++;
-        }
-         if(value == 0) {
-           value = 8;
-           count-=1;
-         }
-        if(player.returnQuady() + (1*count) > 8) {
-          cout <<"Y: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
-          player.setSecy(player.returnSecy() );
-          player.setQuady(player.returnQuady() );
-        }else {
-          player.setSecy(value);
-          player.setQuady(player.returnQuady() + (1*count) );
-          player.setStarDate(player.getStarDate() + 1);
-        }
-      }else {
-      player.setSecy(player.returnSecy() + (1*move) );
-      }
-
-      break;
-
-      case SOUTH_EAST:
-      player.tempPos(player.returnSecx(),player.returnSecy() );
-      if(player.returnSecx() + (1*move) > 8) {
-        int value = player.returnSecx() + (1*move);
-        int count = 0;
-        while(value >= 8) {
-          value = value - 8;
-          count++;
-        }
-         if(value == 0) {
+  
+    //Warp Factor input
+    warp_factor = inputCheck_F("WARP FACTOR(0-8): ",0,8);
+  
+  
+      //move = number of 1/8th part of quadrants moved.
+      int move = warp_factor / 0.125;
+      
+      switch(course) {
+        case EAST:
+        player.tempPos(player.returnSecx(),player.returnSecy() );
+        if( (player.returnSecx() + (1*move)) > 8 ) {
+          int value = (player.returnSecx() + (1*move));
+          int count = 0;
+          while(value >= 8) {
+            value = value - 8;
+            count++;
+          }
+           if(value == 0){
              value = 8;
              count-=1;
-           }
-        if(player.returnQuadx() + (1*count) > 8) {
-          cout << "X: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
-          player.setSecx(player.returnSecx() );
-          player.setQuadx(player.returnQuadx() );
-        }else {
-          player.setSecx(value);
+         }
+          if( (player.returnQuadx() + (1*count)) > 8 ) {
+            cout << "X: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
+            player.setQuadx(player.returnQuadx() );
+            player.setSecx(player.returnSecx() );
+          }else {
           player.setQuadx(player.returnQuadx() + (1*count) );
+          player.setSecx(value);
+        player.Add();
           player.setStarDate(player.getStarDate() + 1);
-        }
-      }else {
-      player.setSecx(player.returnSecx() + (1*move) );
       }
-      if(player.returnSecy() + (1*move) > 8) {
-        int value = player.returnSecy() + (1*move);
-        int count = 0;
-        while(value >= 8) {
-          value = value - 8;
-          count++;
-        }
-         if(value == 0) {
-             value = 8;
-             count-=1;
-           }
-        if(player.returnQuady() + (1*count) > 8 ) {
-          cout<<"Y: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
-          player.setSecy(player.returnSecy() );
-          player.setQuady(player.returnQuady() );
+  
         }else {
-          player.setQuady(player.returnQuady() + (1*count) );
-          player.setSecy(value);
-          player.setStarDate(player.getStarDate() + 1);
-        }
-      }else {
-      player.setSecy(player.returnSecy() + (1*move) );
-      }
-
-      break;
-
-
-    }
-
-      // list<starbase>::iterator ptr_a;
-      // for(ptr_a = starbases.begin();ptr_a != starbases.end();ptr_a++) {
-      // if( (ptr_a->returnQuadx() == player.returnQuadx() ) && ptr_a->returnQuady() == player.returnQuady() ) {
-      //   //Same quadrant.
-      // if( (ptr_a->returnSecx() == player.returnSecx() ) && ptr_a->returnSecy() == player.returnSecy() ){
-      //     //Same Sector
-      //     player.setTempCond(player.getCondition() );
-      //     player.setCondition("DOCKED");
-      //     cout << "SHIELDS DROPPED FOR DOCKING PURPOSES\n"<<endl;
-      //     int editedx = 1 + ( (ptr_a->returnSecx() -1) * 3 );
-      //     int editedy = ptr_a->returnSecy();
-      //     ss[editedy][editedx] = ">*<";
-      //     player.setArmor(0);
-      //     player.setEnergy(3000);
-      //    }else {
-      //      int editedx = 1 + ( (ptr_a->returnSecx() -1) * 3 );
-      //      int editedy = ptr_a->returnSecy();
-      //      ss[editedy][editedx] = ">!<";
-      //      player.setCondition(player.getTempCond() );
-      //  }  
-
-      // }
-
-      // } 
-      if(player.getStarDate() - player.getIStarDate() == player.getDuration() ) {
-        cout<<"IT IS NOW "<<player.getStarDate()<<". THERE ARE "<<kilgons.size() <<" LEFT."<<endl;
-        cout<<"\t\tENTERPRISE WAS UNSUCCESSFUL IN DESTROYING ALL KILGONS IN THE GALAXY.GAME OVER"<<endl;
-        exit(1);
-      }
-      list<Star>::iterator ptr;
-      for(ptr = stars.begin();ptr != stars.end();ptr++) {
-        if( (ptr->returnQuadx() == player.returnQuadx() ) && ptr->returnQuady() == player.returnQuady()  ) {
-          //Same Quadrant as player
-        if( (ptr->returnSecx() == player.returnSecx() ) && ptr->returnSecy() == player.returnSecy()  ) {
-          //Same Sector
-          cout << "YOU CANT NAVIGATE INTO A STAR SILLY...."<<endl;
-          player.setSecx(player.returnSecx() );
-          player.setSecy(player.returnSecy() );
-          //Damage         
-        }  
+        player.setSecx( player.returnSecx() + (1*move) );
         }
          
-  list<Star>::iterator ptr;
-  for(ptr = stars.begin();ptr != stars.end();ptr++) {
-    if( (ptr->returnQuadx() == player.returnQuadx() ) && ptr->returnQuady() == player.returnQuady()  ) {
-      //Same Quadrant as player
-    if( ptr->returnSecx() == player.returnSecx() && ptr->returnSecy() == player.returnSecy()  ) {
-      cout << "YOU CANT NAVIGATE INTO STARS SILLY!"<<endl;
+        break;
+  
+        case NORTH_EAST:
+        player.tempPos(player.returnSecx(),player.returnSecy() );
+        if( (player.returnSecx() + (1*move)) > 8 ) {
+          int value = (player.returnSecx() + (1*move));
+          int count = 0;
+          while(value >= 8) {
+            value = value - 8;
+            count++;
+          }
+           if(value == 0) {
+             value = 8;
+             count-=1;
+           }
+          if( (player.returnQuadx() + (1*count)) > 8 ) {
+            cout << "X: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
+            player.setQuadx(player.returnQuadx() );
+            player.setSecx(player.returnSecx() );
+          }else {
+          player.setQuadx(player.returnQuadx() + (1*count) );
+          player.setSecx(value);
+        player.Add();
+          player.setStarDate(player.getStarDate() + 1);
+      }
+        }else {
+        player.setSecx( player.returnSecx() + (1*move) );
+        }
+  
+        if((player.returnSecy() - (1*move) ) < 1 ) {
+          int value = player.returnSecy() - (1*move);
+          int count = 0;
+          while(value <= 0) {
+            value = value + 8;
+            count++;
+          }
+  
+          if(player.returnQuady() - (1*count) < 1) {
+            cout << "Y: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
+           player.setSecy(player.returnSecy() );
+           player.setQuady(player.returnQuady() );
+          }else {
+          player.setQuady(player.returnQuady() - (1*count) );
+          player.setSecy(value);
+        player.Add();
+          player.setStarDate(player.getStarDate() + 1);
+      }
+  
+        }else {
+        player.setSecy(player.returnSecy() - (1*move) );
+        }
+  
+        break;
+  
+        case NORTH:
+        player.tempPos(player.returnSecx(),player.returnSecy() );
+        if((player.returnSecy() - (1*move) ) < 1) {
+          int value = player.returnSecy() - (1*move);
+          int count = 0;
+          while(value <= 0) {
+            value = value + 8;
+            count++;
+          }
+  
+          if(player.returnQuady() - (1*count) < 1 ) {
+           cout << "Y: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
+           player.setSecy(player.returnSecy() );
+           player.setQuady(player.returnQuady() );          
+          }else {
+          player.setQuady(player.returnQuady() - (1*count) );
+          player.setSecy(value);
+        player.Add();
+          player.setStarDate(player.getStarDate() + 1);
+      }
+  
+        }else {
+        player.setSecy(player.returnSecy() - (1*move) );
+        }
+  
+        break;
+      
+  
+        case NORTH_WEST:
+        player.tempPos(player.returnSecx(),player.returnSecy() );
+        if( (player.returnSecx() - (1*move)) < 1 ) {
+          int value = player.returnSecx() - (1*move);
+          int count = 0;
+          while(value <= 0) {
+            value = value + 8;
+            count++;
+          }
+  
+          if((player.returnQuadx() - (1*count) ) < 1 ) {
+            cout << "X: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
+            player.setSecx(player.returnSecx() );
+            player.setQuadx(player.returnQuadx() );
+          }else {
+          player.setQuadx(player.returnQuadx() - (1*count) );
+          player.setSecx(value);
+        player.Add();
+          player.setStarDate(player.getStarDate() + 1);
+      }
+        }else {
+        player.setSecx(player.returnSecx() - (1*move) );
+        }
+  
+        if((player.returnSecy() - (1*move)) < 1 ) {
+          int value = player.returnSecy() - (1*move);
+          int count = 0;
+          while(value <= 0 ) {
+            value = value + 8;
+            count++;
+          }
+  
+          if((player.returnQuady() - (1*count)) < 1 ) {
+            cout << "Y: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
+            player.setSecy(player.returnSecy() );
+            player.setQuady(player.returnQuady() );
+          }else {
+            player.setQuady(player.returnQuady() - (1*count) );
+            player.setSecy(value);
+  
+            player.Add();
+            player.setStarDate(player.getStarDate() + 1);
+          }
+        }else {
+        player.setSecy(player.returnSecy() - (1*move) );
+        }
+  
+        break;
+  
+        case WEST:
+        player.tempPos(player.returnSecx(),player.returnSecy() );
+        if((player.returnSecx() - (1*move)) < 1 ) {
+          int value = player.returnSecx() - (1*move);
+          int count = 0;
+          while(value <= 0) {
+            value = value + 8;
+            count++;
+          }
+    
+          if( (player.returnQuadx() - (1*count)) < 1) {
+            cout << "X: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
+            player.setQuadx(player.returnQuadx() );
+            player.setSecx(player.returnSecx() );
+          }else {
+            player.setQuadx(player.returnQuadx() - (1*count));
+            player.setSecx(value);
+  
+            player.Add();
+            player.setStarDate(player.getStarDate() + 1);
+          }
+        }else {
+        player.setSecx(player.returnSecx() - (1*move) );
+        }
+  
+        break;
+  
+        case SOUTH_WEST:
+        player.tempPos(player.returnSecx(),player.returnSecy() );
+        if(player.returnSecx() - (1*move) < 1) {
+          int value = player.returnSecx() - (1*move);
+          int count = 0;
+          while(value <= 0) {
+            value = value + 8;
+            count++;
+          }
+  
+          if(player.returnQuadx() - (1*count) < 1) {
+            cout << "X: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
+            player.setQuadx(player.returnQuadx() );
+            player.setSecx(player.returnSecx() ); 
+          }else {
+            player.setQuadx(player.returnQuadx() - (1*count) );
+            player.setSecx(value);
+  
+            player.Add();
+            player.setStarDate(player.getStarDate() + 1);
+          }
+        }else {
+        player.setSecx(player.returnSecx() - (1*move) );
+        }
+        if(player.returnSecy() + (1*move) > 8) {
+          int value = player.returnSecy() + (1*move);
+          int count = 0;
+          while(value >= 8) {
+            value = value - 8;
+            count++;
+          }
+           if(value == 0) {
+             value = 8;
+             count-=1;
+           }
+          if(player.returnQuady() + (1*count) > 8) {
+            cout <<"Y: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
+            player.setSecy(player.returnSecy() );
+            player.setQuady(player.returnQuady() );
+          }else {
+            player.setQuady(player.returnQuady() + (1*count) );
+            player.setSecy(value);
+  
+            player.Add();
+            player.setStarDate(player.getStarDate() + 1);
+          }
+        }else {
+        player.setSecy(player.returnSecy() + (1*move) );
+        }
+  
+        break;
+  
+        case SOUTH:
+        player.tempPos(player.returnSecx(),player.returnSecy() );
+        if(player.returnSecy() + (1*move) > 8) {
+          int value = player.returnSecy() + (1*move);
+          int count = 0;
+          while(value >= 8) {
+            value = value - 8;
+            count++;
+          }
+           if(value == 0) {
+             value = 8;
+             count-=1;
+           }
+          if(player.returnQuady() + (1*count) > 8) {
+            cout <<"Y: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
+            player.setSecy(player.returnSecy() );
+            player.setQuady(player.returnQuady() );
+          }else {
+            player.setSecy(value);
+            player.setQuady(player.returnQuady() + (1*count) );
+  
+            player.Add();
+            player.setStarDate(player.getStarDate() + 1);
+          }
+        }else {
+        player.setSecy(player.returnSecy() + (1*move) );
+        }
+  
+        break;
+  
+        case SOUTH_EAST:
+        player.tempPos(player.returnSecx(),player.returnSecy() );
+        if(player.returnSecx() + (1*move) > 8) {
+          int value = player.returnSecx() + (1*move);
+          int count = 0;
+          while(value >= 8) {
+            value = value - 8;
+            count++;
+          }
+           if(value == 0) {
+               value = 8;
+               count-=1;
+             }
+          if(player.returnQuadx() + (1*count) > 8) {
+            cout << "X: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
+            player.setSecx(player.returnSecx() );
+            player.setQuadx(player.returnQuadx() );
+          }else {
+            player.setSecx(value);
+            player.setQuadx(player.returnQuadx() + (1*count) );
+  
+            player.Add();
+            player.setStarDate(player.getStarDate() + 1);
+          }
+        }else {
+        player.setSecx(player.returnSecx() + (1*move) );
+        }
+        if(player.returnSecy() + (1*move) > 8) {
+          int value = player.returnSecy() + (1*move);
+          int count = 0;
+          while(value >= 8) {
+            value = value - 8;
+            count++;
+          }
+           if(value == 0) {
+               value = 8;
+               count-=1;
+             }
+          if(player.returnQuady() + (1*count) > 8 ) {
+            cout<<"Y: TOO FAR OUT OF THE GALAXY!(UNDEFINED)"<<endl;
+            player.setSecy(player.returnSecy() );
+            player.setQuady(player.returnQuady() );
+          }else {
+            player.setQuady(player.returnQuady() + (1*count) );
+            player.setSecy(value);
+            player.Add();
+            player.setStarDate(player.getStarDate() + 1);
+          }
+        }else {
+        player.setSecy(player.returnSecy() + (1*move) );
+        }
+  
+        break;
+  
+  
+      }
+  
+        if(player.getStarDate() - player.getIStarDate() == player.getDuration() ) {
+          cout<<"IT IS NOW "<<player.getStarDate()<<". THERE ARE "<<kilgons.size() <<" LEFT."<<endl;
+          cout<<"\t\tENTERPRISE WAS UNSUCCESSFUL IN DESTROYING ALL KILGONS IN THE GALAXY.GAME OVER"<<endl;
+          exit(1);
+        }
+        
+     list<Star>::iterator ptr;
+     for(ptr = stars.begin();ptr != stars.end();ptr++) {
+       if( (ptr->returnQuadx() == player.returnQuadx() ) && ptr->returnQuady() == player.returnQuady()  ) {
+         //Same Quadrant as player
+         if(ptr->returnSecx() == player.returnSecx() && ptr->returnSecy() == player.returnSecy() ) {
+           cout<<"YOU CANT NAVIGATE INTO STARS SILLY!!"<<endl;
+           player.setQuadx(tempquadx);
+           player.setQuady(tempquady);
+           player.setSecx(tempsecx);
+           player.setSecy(tempsecy);
+          if(player.getArmor() - 10 > 0) {
+            player.setArmor(player.getArmor() - 10);
+          }else {
+            cout<<"ENTERPRISE WAS DESTROYED!! GAME OVER!"<<endl;
+            exit(1);
+          }
+         }
+         
+       }
+     }  
+            
+     list<kilgon>::iterator ptr1;
+     for(ptr1 = kilgons.begin();ptr1 != kilgons.end();ptr1++) {
+       if( (ptr1->returnQuadx() == player.returnQuadx() ) && ptr1->returnQuady() == player.returnQuady()  ) {
+         //Same Quadrant as player
+         if(ptr1->returnSecx() == player.returnSecx() && ptr1->returnSecy() == player.returnSecy() ) {
+           cout<<"YOU DONT NAVIGATE INTO KILGONS SILLY!! YOU DESTROY THEM!"<<endl;
+           player.setQuadx(tempquadx);
+           player.setQuady(tempquady);
+           player.setSecx(tempsecx);
+           player.setSecy(tempsecy);
+          if(player.getArmor() - 50 > 0) {
+            player.setArmor(player.getArmor() - 50);
+          }else {
+            cout<<"ENTERPRISE WAS DESTROYED!! GAME OVER!"<<endl;
+            exit(1);
+          }         
+         }
+         
+       }
+     } 
+  
+int random = 0;
+list<kilgon>::iterator ptr2;
+for(ptr2 = kilgons.begin();ptr2 != kilgons.end();ptr2++) {
+  if( (ptr2->returnQuadx() == player.returnQuadx() ) && ptr2->returnQuady() == player.returnQuady()  ) {
+    //Same Quadrant as player
+    srand(time(NULL));
+    random = rand() % (100 + 1 - 50) + 50;
+    if(player.getArmor() - random > 0) {
+        cout<<"KILGON HIT ENTERPRISE WITH "<<random<<" NUMBER OF UNITS"<<endl;
+        player.setArmor(player.getArmor() - random);
     }else {
-      cout<<"PTR X: "<<ptr->returnSecx()<<endl;
-      cout<<"PTR Y: "<<ptr->returnSecy()<<endl;
-    }  
+      cout<<"ARMOR: "<<player.getArmor()<<endl;
+      cout<<"RANDOM "<<random<<endl;
+        cout<<"ENTERPRISE HAS BEEN DESTROYED! GAME OVER!!" <<endl;
+        exit(1);
     }
-  }  
-
-
-
-  //player.damaged();
-  
-  commands();
-  
   }
-}
+}  
+    player.Destroy();
+    
+    commands();
+    
+    }
+
 //To set shield strength.
 void shieldset() {
   int shield = inputCheck("SET ENERGY GOING TO SHIELD: ",player.getArmor() ,player.getEnergy() );
@@ -1109,4 +1161,14 @@ void photonAttk() {
 
 }
 
-
+void damageControl() {
+  cout<<"\n\nDAMAGE CONTROL\t\t\t\tSTATE OF REPAIR"<<endl;
+  cout<<"WARP ENGINES\t\t\t\t"<<player.getWarp()<<endl;
+  cout<<"S.R SENSORS\t\t\t\t"<<player.getS()<<endl;
+  cout<<"L.R SENSORS\t\t\t\t"<<player.getL()<<endl;
+  cout<<"PHASER CNTRL\t\t\t\t"<<player.getPhaser()<<endl;
+  cout<<"PHOTON TUBES\t\t\t\t"<<player.getPhoton()<<endl;
+  cout<<"DAMAGE CNTRL\t\t\t\t"<<player.getDamage()<<endl;
+  cout<<"SHIELD CNTRL\t\t\t\t"<<player.getShield()<<endl;
+  cout<<"COMPUTER\t\t\t\t"<<player.getComputer()<<endl;
+}

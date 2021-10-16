@@ -8,7 +8,7 @@
 //Enterprise is <*>(The Player)
 class Enterprise: public SpaceObjects{
     protected:
-    int m_photoncount,m_photonpower,m_energy,m_pulseattack,m_initialstardate,m_duration,m_stardate;
+    int m_photoncount,m_photonpower,m_energy,m_pulseattack,m_initialstardate,m_duration,m_stardate,m_warp,m_ssensors,m_lsensors,m_phasers,m_photons,m_damage,m_shield,m_computer;
     string m_condition,m_tempcondition;
 
     public:
@@ -84,5 +84,31 @@ class Enterprise: public SpaceObjects{
     int getIStarDate() {
         return m_initialstardate;
     }
+    int getWarp() {
+        return m_warp;
+    }
+    int getS() {
+        return m_ssensors;
+    }
+    int getL() {
+        return m_lsensors;
+    }
+    int getPhaser() {
+        return m_phasers;
+    }
+    int getPhoton() {
+        return m_photons;
+    }
+    int getDamage() {
+        return m_damage;
+    }
+    int getShield() {
+        return m_shield;
+    }             
+    int getComputer() {
+        return m_computer;
+    }
+    void Destroy();
+    void Add();
 };
 #endif
