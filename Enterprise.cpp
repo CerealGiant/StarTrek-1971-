@@ -24,7 +24,7 @@
     //m_photonpower > shield strength of the enemy.
 
     //Randomly generating the pulse attack value
-    int p = rand() % (220 +1-60) + 60;
+    int p = rand() % (3000 +1-0) + 0;
     m_pulseattack = p;
 }
 
@@ -71,7 +71,7 @@ void Enterprise:: Add() {
   }          
 }
 void Enterprise:: Destroy() {
-  if(m_stardate - m_initialstardate % 6 == 0 && m_stardate - m_initialstardate != 0) {
+  if( (m_stardate - m_initialstardate) % 6 == 0 && m_stardate - m_initialstardate != 0) {
     srand(time(0));
     int random = rand() % (3 + 1 - 1) + 1;
     switch(random) {
@@ -89,7 +89,7 @@ void Enterprise:: Destroy() {
       m_computer = -2;
       break;
     }
-  }else if(m_stardate - m_initialstardate % 10 == 0 && m_stardate - m_initialstardate != 0) {
+  }else if( (m_stardate - m_initialstardate) % 10 == 0 && m_stardate - m_initialstardate != 0) {
     srand(time(0));
     int random = rand() % (5 + 1 - 1) + 1;
     switch(random) {

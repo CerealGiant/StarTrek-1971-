@@ -41,7 +41,7 @@ string Records[10][17] = {
 };
 
 string ss[10][26] = {
-    {" - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "},
+    {"\e[1m -\e[0m ","\e[1m = \e[0m","\e[1m -\e[0m ","\e[1m -\e[0m ","\e[1m = ","\e[1m -\e[0m ","\e[1m -\e[0m ","\e[1m = ","\e[1m -\e[0m ","\e[1m -\e[0m ","\e[1m = ","\e[1m -\e[0m ","\e[1m -\e[0m ","\e[1m = ","\e[1m -\e[0m ","\e[1m -\e[0m ","\e[1m = ","\e[1m -\e[0m ","\e[1m -\e[0m ","\e[1m = ","\e[1m -\e[0m ","\e[1m -\e[0m ","\e[1m = ","\e[1m -\e[0m "},
     {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "},
     {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - ","STARDATE ","FILLER"},
     {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - ","CONDITION ","FILLER"},
@@ -50,7 +50,7 @@ string ss[10][26] = {
     {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - ","ENERGY ","FILLER"},
     {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - ","SHIELDS ","FILLER"},
     {" - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - "," - ","PHOTONS ","FILLER"},
-    {" - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "," - "," = "," - "},
+     {"\e[1m -\e[0m ","\e[1m = \e[0m","\e[1m -\e[0m ","\e[1m -\e[0m ","\e[1m = ","\e[1m -\e[0m ","\e[1m -\e[0m ","\e[1m = ","\e[1m -\e[0m ","\e[1m -\e[0m ","\e[1m = ","\e[1m -\e[0m ","\e[1m -\e[0m ","\e[1m = ","\e[1m -\e[0m ","\e[1m -\e[0m ","\e[1m = ","\e[1m -\e[0m ","\e[1m -\e[0m ","\e[1m = ","\e[1m -\e[0m ","\e[1m -\e[0m ","\e[1m = ","\e[1m -\e[0m "}
 };
 
 //Starting Screen(ASCII Art & Options)
@@ -73,6 +73,10 @@ void start() {
   switch(inputCheck("PRESS 1 FOR INSTRUCTIONS. PRESS 2 TO BEGIN:",1,2)) {
     case 1:
     instructions();
+    init();    
+    cout<<"\n\t\t\t\tSTAR TREK\n"<<endl;
+    cout<<"THERE ARE "<<kilgons.size()<<" KILGONS TO DESTROY"<<" IN "<<player.getDuration()<<" STARDATES."<<"THERE ARE "<<starbases.size() <<" STARBASES.\n"<<endl;
+    shortRangeScan();
     break;
     case 2:
     cout<<"\n\t\t\t\tSTAR TREK\n"<<endl;
@@ -114,12 +118,13 @@ void instructions() {
   //End of instructions
   cout <<"\n Press anything to continue....";
   fgets(cont,sizeof(cont),stdin);
+  
 }
 
 //Initalising the Enterprise,Kilgons,Stars and Starbases
 void init() {
   srand(time(0));
-  int d = rand() % (30 + 1 - 12) + 12;
+  int d = rand() % (25 + 1 - 12) + 12;
     player.setDuration(d); 
     for(int i =1;i < 9;i++) {
       for(int j = 1;j<9;j++) {
@@ -129,7 +134,7 @@ void init() {
     }
   //Creating & Initating the list of kilgons
   srand(time(NULL));
-  int k = rand() % (25 + 1 - 8) + 8;
+  int k = rand() % (25 + 1 - 10) + 10;
   srand(time(NULL));
   for(int i = 0; i < k;i++) {
     kilgon *a = new kilgon;
@@ -264,41 +269,56 @@ void commands() {
     case 0:
     while(player.getWarp() < 0) {
       cout<<"DAMAGE CONTROL REPORT: WARP ENGINES ARE DOWN!"<<endl;
+      commands();
     }    
     movement();
     break;
     case 1:
     while(player.getS() < 0) {
       cout<<"DAMAGE CONTROL REPORT: S.R SENSORS ARE DOWN!"<<endl;
+      commands();
     }
     shortRangeScan();
     break;
     case 2:
     while(player.getL() < 0) {
       cout<<"DAMAGE CONTROL REPORT: L.R SENSORS ARE DOWN!"<<endl;
+      commands();
     }    
     longScan();
     break;
     case 3:
     while(player.getPhaser() < 0) {
       cout<<"DAMAGE CONTROL REPORT: PHASER CONTROL IS DOWN!"<<endl;
+      commands();
     }    
     pulseAttk();
     break;
     case 4:
     while(player.getPhoton() < 0) {
       cout<<"DAMAGE CONTROL REPORT: PHOTON TUBES ARE DOWN!"<<endl;
+      commands();
     }    
     photonAttk();
     break;
     case 5:
     while(player.getShield() < 0) {
       cout<<"DAMAGE CONTROL REPORT: SHIELD CONTROL IS DOWN!"<<endl;
+      commands();
     }    
     shieldset();
+    break;
+    case 6:
+    while(player.getDamage() < 0) {
+      cout<<"DAMAGE CONTROL REPORT: DAMAGE CONTROL IS DOWN!"<<endl;
+      commands();
+    }
+    damageControl();
+    break;
     case 7:
     while(player.getComputer() < 0) {
       cout<<"DAMAGE CONTROL REPORT: COMPUTER IS DOWN!"<<endl;
+      commands();
     }    
     libraryComputer();
     break;
@@ -348,7 +368,7 @@ void movement() {
           player.setQuadx(player.returnQuadx() + (1*count) );
           player.setSecx(value);
         player.Add();
-          player.setStarDate(player.getStarDate() + 1);
+          player.setStarDate(player.getStarDate() + (1*warp_factor) );
       }
   
         }else {
@@ -378,7 +398,7 @@ void movement() {
           player.setQuadx(player.returnQuadx() + (1*count) );
           player.setSecx(value);
         player.Add();
-          player.setStarDate(player.getStarDate() + 1);
+          player.setStarDate(player.getStarDate() + (1*warp_factor) );
       }
         }else {
         player.setSecx( player.returnSecx() + (1*move) );
@@ -400,7 +420,7 @@ void movement() {
           player.setQuady(player.returnQuady() - (1*count) );
           player.setSecy(value);
         player.Add();
-          player.setStarDate(player.getStarDate() + 1);
+          //player.setStarDate(player.getStarDate() + (1*warp_factor) );
       }
   
         }else {
@@ -427,7 +447,7 @@ void movement() {
           player.setQuady(player.returnQuady() - (1*count) );
           player.setSecy(value);
         player.Add();
-          player.setStarDate(player.getStarDate() + 1);
+          player.setStarDate(player.getStarDate() + (1*warp_factor) );
       }
   
         }else {
@@ -455,7 +475,7 @@ void movement() {
           player.setQuadx(player.returnQuadx() - (1*count) );
           player.setSecx(value);
         player.Add();
-          player.setStarDate(player.getStarDate() + 1);
+          player.setStarDate(player.getStarDate() + (1*warp_factor) );
       }
         }else {
         player.setSecx(player.returnSecx() - (1*move) );
@@ -478,7 +498,7 @@ void movement() {
             player.setSecy(value);
   
             player.Add();
-            player.setStarDate(player.getStarDate() + 1);
+            //player.setStarDate(player.getStarDate() + (1*warp_factor) );
           }
         }else {
         player.setSecy(player.returnSecy() - (1*move) );
@@ -505,7 +525,7 @@ void movement() {
             player.setSecx(value);
   
             player.Add();
-            player.setStarDate(player.getStarDate() + 1);
+            player.setStarDate(player.getStarDate() + (1*warp_factor) );
           }
         }else {
         player.setSecx(player.returnSecx() - (1*move) );
@@ -532,7 +552,7 @@ void movement() {
             player.setSecx(value);
   
             player.Add();
-            player.setStarDate(player.getStarDate() + 1);
+            player.setStarDate(player.getStarDate() + (1*warp_factor) );
           }
         }else {
         player.setSecx(player.returnSecx() - (1*move) );
@@ -557,7 +577,7 @@ void movement() {
             player.setSecy(value);
   
             player.Add();
-            player.setStarDate(player.getStarDate() + 1);
+            //player.setStarDate(player.getStarDate() + (1*warp_factor) );
           }
         }else {
         player.setSecy(player.returnSecy() + (1*move) );
@@ -587,7 +607,7 @@ void movement() {
             player.setQuady(player.returnQuady() + (1*count) );
   
             player.Add();
-            player.setStarDate(player.getStarDate() + 1);
+            player.setStarDate(player.getStarDate() + (1*warp_factor) );
           }
         }else {
         player.setSecy(player.returnSecy() + (1*move) );
@@ -617,7 +637,7 @@ void movement() {
             player.setQuadx(player.returnQuadx() + (1*count) );
   
             player.Add();
-            player.setStarDate(player.getStarDate() + 1);
+            player.setStarDate(player.getStarDate() + (1*warp_factor) );
           }
         }else {
         player.setSecx(player.returnSecx() + (1*move) );
@@ -641,7 +661,7 @@ void movement() {
             player.setQuady(player.returnQuady() + (1*count) );
             player.setSecy(value);
             player.Add();
-            player.setStarDate(player.getStarDate() + 1);
+            //player.setStarDate(player.getStarDate() + (1*warp_factor) );
           }
         }else {
         player.setSecy(player.returnSecy() + (1*move) );
@@ -653,7 +673,7 @@ void movement() {
       }
   
         if(player.getStarDate() - player.getIStarDate() == player.getDuration() ) {
-          cout<<"IT IS NOW "<<player.getStarDate()<<". THERE ARE "<<kilgons.size() <<" LEFT."<<endl;
+          cout<<"IT IS NOW "<<player.getStarDate()<<". THERE ARE "<<kilgons.size() <<" KILGONS LEFT."<<endl;
           cout<<"\t\tENTERPRISE WAS UNSUCCESSFUL IN DESTROYING ALL KILGONS IN THE GALAXY.GAME OVER"<<endl;
           exit(1);
         }
@@ -727,8 +747,10 @@ for(ptr2 = kilgons.begin();ptr2 != kilgons.end();ptr2++) {
 //To set shield strength.
 void shieldset() {
   int shield = inputCheck("SET ENERGY GOING TO SHIELD: ",player.getArmor() ,player.getEnergy() );
+  int oldarmor = player.getArmor();
+  int oldenergy = player.getEnergy();
   player.setArmor(shield);
-  player.setEnergy(3000 - shield);
+  player.setEnergy(oldenergy - (shield - oldarmor ) );
   commands();
 }
 
@@ -819,7 +841,7 @@ void pulseAttk() {
       cout<<"TARGET ACQUIRED! ATTACKING....\n";
       int inpt = inputCheck("ENTER ENERGY TO BE USED: ",0,player.getEnergy() );
       p = player.getPulse();
-      while(p > inpt) {
+      while(p > inpt*0.60) {
         srand(time(0));
         p = rand() % (inpt + 1 - 0) + 0;
       }
@@ -890,7 +912,7 @@ void libraryComputer() {
     cout<<"*********STATUS REPORT*********"<<endl;
     cout<<"NUMBER OF KILGONS LEFT: "<<kilgons.size()<<endl;
     cout<<"STARDATES LEFT:"<<player.getDuration() - (player.getStarDate() - player.getIStarDate() ) <<endl;
-    cout<<"NUMBER OF STARBASES: "<<starbases.size()<<endl;
+    cout<<"NUMBER OF STARBASES: "<<starbases.size()<<endl;    
     cout<<"*******************************"<<endl;
     commands();
     break;
@@ -1171,4 +1193,6 @@ void damageControl() {
   cout<<"DAMAGE CNTRL\t\t\t\t"<<player.getDamage()<<endl;
   cout<<"SHIELD CNTRL\t\t\t\t"<<player.getShield()<<endl;
   cout<<"COMPUTER\t\t\t\t"<<player.getComputer()<<endl;
+  cout<<endl;
+  commands();
 }
