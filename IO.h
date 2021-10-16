@@ -26,7 +26,6 @@ void test();
 void pulseAttk();
 void photonAttk();
 void libraryComputer();
-void damageReport();
 string longView(int x, int y);
 extern string ss[10][26];
 #endif

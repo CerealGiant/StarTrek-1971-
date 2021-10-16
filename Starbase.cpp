@@ -19,7 +19,7 @@ void starbase:: LoadPos() {
   //Loading Position
   int editedx = 1 + ( (m_secx -1) * 3 );
   int editedy = m_secy;
-  while( ss[editedy][editedx] != ">*<" && (ss[editedy][editedx] != "\0" && ss[editedy][editedx] != ">!<") ) {
+  while( ss[editedy][editedx] != ">*<" && (ss[editedy][editedx] != " - " && ss[editedy][editedx] != ">!<") ) {
     srand(time(0));
     m_secx = rand() % (8 + 1 - 1) + 1;
     m_secy = rand() % (8 + 1 - 1) + 1;
@@ -41,5 +41,5 @@ void starbase::docked() {
 void starbase:: tempPos(int x, int y) {
   int editedx = 1 + ( (m_secx -1) * 3 );
   int editedy = m_secy;
-  ss[editedy][editedx] = "\0";
+  ss[editedy][editedx] = " - ";
 } 

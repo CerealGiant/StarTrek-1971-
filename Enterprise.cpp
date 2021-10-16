@@ -7,7 +7,6 @@
     m_condition = "GREEN";
     m_tempcondition = "GREEN";
     m_energy = 3000;
-    warp_e = 0,s_sensor = 0,l_sensor = 0,p_ctrl = 0,p_tubes = 0,damage_ctrl = 0,shield_ctrl = 0,computer = 0;
 
     srand(time(NULL));
     //Randomly generating INITIAL quad postions(x and y for the quad)
@@ -42,5 +41,5 @@ void Enterprise:: LoadPos() {
 void Enterprise:: tempPos(int x, int y) {
   int editedx = 1 + ( (x -1) * 3 );
   int editedy = y;
-  ss[editedy][editedx] = "\0";
+  ss[editedy][editedx] = " - ";
 }
